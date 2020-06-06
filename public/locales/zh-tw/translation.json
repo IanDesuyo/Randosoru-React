@@ -1,7 +1,16 @@
 {
-    "NavBrand": "公會管理協會",
-    "description": {
-      "part1": "To get started, edit <1>src/App.js</1> and save to reload.",
-      "part2": "Switch language between english and german using buttons above."
-    }
+  "Brand": "公會管理協會",
+  "NavBar": {
+    "Home": "首頁",
+    "About": "關於",
+    "Login": "登入",
+    "Logout": "登出"
+  },
+  "Login": {
+    "Title": "透過以下方式登入:"
+  },
+  "Notices": {
+    "HasLogin": "已登入",
+    "HasLogout": "已登出"
   }
+}

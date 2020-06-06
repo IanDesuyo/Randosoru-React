@@ -1,0 +1,16 @@
+{
+  "Brand": "Guild Manage Union",
+  "NavBar": {
+    "Home": "Home",
+    "About": "About",
+    "Login": "Login",
+    "Logout": "Logout"
+  },
+  "Login": {
+    "Title": "Login with"
+  },
+  "Notices": {
+    "HasLogin": "Login success",
+    "HasLogout": "Logged Out Successfully"
+  }
+}
