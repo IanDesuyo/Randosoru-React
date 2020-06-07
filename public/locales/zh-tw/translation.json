@@ -4,13 +4,19 @@
     "Home": "首頁",
     "About": "關於",
     "Login": "登入",
-    "Logout": "登出"
+    "Logout": "登出",
+    "MyProfile": "個人檔案"
   },
   "Login": {
     "Title": "透過以下方式登入:"
   },
   "Notices": {
     "HasLogin": "已登入",
-    "HasLogout": "已登出"
+    "HasLogout": "已登出",
+    "Copy": "Copy!"
+  },
+  "Profile": {
+    "Unbind_UID": "未綁定",
+    "Created_at": "創建時間"
   }
 }

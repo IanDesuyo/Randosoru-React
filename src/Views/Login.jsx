@@ -4,6 +4,7 @@ import { AuthService } from "../Services/Auth/AuthService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faLine } from "@fortawesome/free-brands-svg-icons";
 import { useTranslation } from "react-i18next";
+import toastr from "toastr";
 
 export default function Login(props) {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ export default function Login(props) {
 
   return (
     <div className="container mt-5">
-      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <div className="alert alert-warning alert-dismissible fade show" role="alert">
         <strong>開發中!</strong> 暫不支持Line登入
       </div>
       <div className="card text-center rounded">
@@ -26,6 +27,7 @@ export default function Login(props) {
               onClick={(e) => {
                 e.preventDefault();
                 AuthService.login_discord();
+                toastr.info("跳轉中...", "", {closeButton:true, positionClass: "toast-bottom-right"});
               }}
             >
               <FontAwesomeIcon icon={faDiscord} size="6x" color="#7289DA" />
@@ -35,7 +37,9 @@ export default function Login(props) {
               className="mt-4"
               onClick={(e) => {
                 e.preventDefault();
-                AuthService.login_discord();
+                // AuthService.login_discord();
+                toastr.error("還沒做好啦 owo", "", {closeButton:true, positionClass: "toast-bottom-right"});
+
               }}
             >
               <FontAwesomeIcon icon={faLine} size="6x" color="#00C300" />

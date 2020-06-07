@@ -1,104 +1,106 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useTranslation, withTranslation, Trans } from "react-i18next";
 import { AuthService } from "../Services/Auth/AuthService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { withTranslation } from "react-i18next";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 
-export default function Navbar() {
-  const [currentUser, setCurrentUser] = useState();
-  const { t, i18n } = useTranslation();
+class LegacyTopBar extends React.Component {
+  constructor(props) {
+    super(props);
 
-  useEffect(() => {
-    AuthService.currentUser.subscribe((x) => setCurrentUser(x));
-  });
+    this.state = {
+      user: null,
+    };
+  }
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
+  componentWillMount() {
+    AuthService.currentUser.subscribe((x) => this.setState({ user: x }));
+  }
 
-  return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top ">
-      <Link to="/" className="navbar-brand">
-        {t("Brand")}
-      </Link>
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
+  render() {
+    const { t, i18n } = this.props;
+    return (
+      <Navbar
+        bg="dark"
+        expand="lg"
+        sticky="top"
+        variant="dark"
+        collapseOnSelect
       >
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarNav">
-        <div className="navbar-nav mr-auto">
-          <NavLink
-            exact
-            to="/"
-            className="nav-item nav-link"
-            activeClassName="nav-item nav-link active"
-          >
-            {t("NavBar.Home")}
-          </NavLink>
-          <NavLink
-            to="/about"
-            className="nav-item nav-link"
-            activeClassName="nav-item nav-link active"
-          >
-            {t("NavBar.About")}
-          </NavLink>
-        </div>
-        <div className="navbar-nav">
-          <li className="nav-item dropdown mr-3">
-            <a
-              href="/#"
-              className="nav-link dropdown-toggle"
-              id="navbarDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
+        <Link to="/" className="navbar-brand">
+          {t("Brand")}
+        </Link>
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Nav className="mr-auto">
+            <NavLink
+              exact
+              to="/"
+              className="nav-item nav-link"
+              eventKey="1"
             >
-              <FontAwesomeIcon icon={faGlobe} />
-            </a>
-            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a
-                className="dropdown-item"
-                href="/#"
-                onClick={() => changeLanguage("zh-TW")}
+              {t("NavBar.Home")}
+            </NavLink>
+            <NavLink
+              to="/about"
+              className="nav-item nav-link"
+              eventKey="2"
+            >
+              {t("NavBar.About")}
+            </NavLink>
+            {this.state.user ? (
+              <NavLink
+                to="/users/me"
+                className="nav-item nav-link"
+                eventKey="3"
               >
+                {t("NavBar.MyProfile")}
+              </NavLink>
+            ) : (
+              <> </>
+            )}
+          </Nav>
+          <Nav>
+            <NavDropdown
+              title={<FontAwesomeIcon icon={faGlobe} />}
+              id="collasible-nav-dropdown"
+              className="mr-4"
+            >
+              <NavDropdown.Item onClick={() => i18n.changeLanguage("zh-TW")}>
                 繁體中文
-              </a>
-              <a
-                className="dropdown-item"
-                href="/#"
-                onClick={() => changeLanguage("ja")}
-              >
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => i18n.changeLanguage("ja")}>
                 日本語
-              </a>
-              <a
-                className="dropdown-item"
-                href="/#"
-                onClick={() => changeLanguage("en")}
-              >
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => i18n.changeLanguage("en")}>
                 English
-              </a>
-            </div>
-          </li>
-          {currentUser ? (
-            <NavLink to="/logout" className="nav-item nav-link">
-              {t("NavBar.Logout")}
-            </NavLink>
-          ) : (
-            <NavLink to="/login" className="nav-item nav-link">
-              {t("NavBar.Login")}
-            </NavLink>
-          )}
-        </div>
-      </div>
-    </nav>
-  );
+              </NavDropdown.Item>
+            </NavDropdown>
+            {this.state.user ? (
+              <NavLink
+                to="/logout"
+                className="nav-item nav-link"
+                eventKey="4"
+              >
+                {t("NavBar.Logout")}
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/login"
+                className="nav-item nav-link"
+                eventKey="5"
+              >
+                {t("NavBar.Login")}
+              </NavLink>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    );
+  }
 }
+
+const TopBar = withTranslation()(LegacyTopBar);
+export default TopBar;
