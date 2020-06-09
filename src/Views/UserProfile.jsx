@@ -12,10 +12,11 @@ class LegacyUserProfile extends React.Component {
       check_code: 0,
       user: {
         name: "Loading...",
+        id: "",
         avatar: "https://i.imgur.com/e4KrYHe.png",
         uid: "",
         created_at: "",
-        guild_id: "",
+        guild: {},
       },
     };
   }
@@ -31,6 +32,9 @@ class LegacyUserProfile extends React.Component {
   }
 
   getUser(id) {
+    if (id !== "me" && id.length > 6) {
+      return this.setState({ check_code: 400 });
+    }
     if (id === "me" && AuthService.currentUserValue) {
       axios
         .get("/api/profile/users/me", {
@@ -41,11 +45,13 @@ class LegacyUserProfile extends React.Component {
         })
         .catch((error) => {
           if (error.response.status === 401) {
-            this.setState({ check_code: 401 });
+            this.setState({ check_code: 4012 });
+          } else {
+            this.setState({ check_code: 500 });
           }
         });
     } else if (id === "me" && !AuthService.currentUserValue) {
-      this.setState({ check_code: 400 });
+      this.setState({ check_code: 4011 });
     } else {
       axios
         .get("/api/profile/users/" + id)
@@ -67,19 +73,19 @@ class LegacyUserProfile extends React.Component {
     switch (this.state.check_code) {
       case 0:
         return <> </>;
-      case 400:
+      case 4011:
         return (
           <div className="container mt-3">
             <div className="alert alert-warning" role="alert">
-              尚未登入!
+              {t("Alerts.NotLogin")}
             </div>
           </div>
         );
-      case 401:
+      case 4012:
         return (
           <div className="container mt-3">
             <div className="alert alert-danger" role="alert">
-              驗證失敗! 請<Link to="/logout">重新登入</Link>
+              <Link to="/logout">{t("Alerts.AuthFailed")}</Link>
             </div>
           </div>
         );
@@ -87,7 +93,7 @@ class LegacyUserProfile extends React.Component {
         return (
           <div className="container mt-3">
             <div className="alert alert-warning" role="alert">
-              你沒有權限訪問此個人檔案
+            {t("Alerts.ProfileNoPerms")}
             </div>
           </div>
         );
@@ -95,7 +101,7 @@ class LegacyUserProfile extends React.Component {
         return (
           <div className="container mt-3">
             <div className="alert alert-danger" role="alert">
-              發生錯誤
+            {t("Alerts.Error")}
             </div>
           </div>
         );
@@ -127,13 +133,19 @@ class LegacyUserProfile extends React.Component {
                   </small>
                 </h4>
                 <p>
-                  UID:
+                  {t("Profile.UID")}
                   {this.state.user.uid
                     ? this.state.user.uid
-                    : t("Profile.Unbind_UID")}
+                    : t("Profile.UID_Null")}
                 </p>
                 <p>
-                  {t("Profile.Created_at")}: {this.state.user.created_at}
+                  {t("Profile.Guild")}
+                  {this.state.user.guild
+                    ? this.state.user.guild.name
+                    : t("Profile.Guild_Null")}
+                </p>
+                <p>
+                  {t("Profile.Created_at")} {this.state.user.created_at}
                 </p>
               </div>
             </div>

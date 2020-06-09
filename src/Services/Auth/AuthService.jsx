@@ -13,7 +13,8 @@ export const AuthService = {
 
 function login_discord() {
   let win = window.open(
-    "https://discordapp.com/api/oauth2/authorize?client_id=609318305718730790&redirect_uri=https://test.randosoru.me/login/oauth/discord&response_type=code&scope=identify&prompt=none",
+    // "https://discordapp.com/api/oauth2/authorize?client_id=609318305718730790&redirect_uri=https://test.randosoru.me/login/oauth/discord&response_type=code&scope=identify&prompt=none",
+    "https://discordapp.com/api/oauth2/authorize?client_id=609318305718730790&redirect_uri=http://127.0.0.1/login/oauth/discord&response_type=code&scope=identify&prompt=none",
     "window",
     "toolbar=no, menubar=no, resizable=no height=600 width=400"
   );

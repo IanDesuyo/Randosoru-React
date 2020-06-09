@@ -5,7 +5,8 @@
     "About": "關於",
     "Login": "登入",
     "Logout": "登出",
-    "MyProfile": "個人檔案"
+    "Profile": "個人檔案",
+    "Guild": "戰隊"
   },
   "Login": {
     "Title": "透過以下方式登入:"
@@ -15,8 +16,17 @@
     "HasLogout": "已登出",
     "Copy": "Copy!"
   },
+  "Alerts": {
+    "NotLogin": "尚未登入!",
+    "AuthFailed": "驗證失敗! 請重新登入",
+    "ProfileNoPerms": "你沒有權限訪問此個人檔案",
+    "Error": "發生錯誤"
+  },
   "Profile": {
-    "Unbind_UID": "未綁定",
-    "Created_at": "創建時間"
+    "UID": "遊戲ID: ",
+    "UID_Null": "未綁定",
+    "Guild": "所屬戰隊: ",
+    "Guild_Null": "未加入",
+    "Created_at": "創建時間: "
   }
 }

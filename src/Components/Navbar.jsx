@@ -35,29 +35,29 @@ class LegacyTopBar extends React.Component {
         <Navbar.Toggle />
         <Navbar.Collapse>
           <Nav className="mr-auto">
-            <NavLink
-              exact
-              to="/"
-              className="nav-item nav-link"
-              eventKey="1"
-            >
+            <NavLink exact to="/" className="nav-item nav-link" eventKey="1">
               {t("NavBar.Home")}
             </NavLink>
-            <NavLink
-              to="/about"
-              className="nav-item nav-link"
-              eventKey="2"
-            >
+            <NavLink to="/about" className="nav-item nav-link" eventKey="2">
               {t("NavBar.About")}
             </NavLink>
             {this.state.user ? (
-              <NavLink
-                to="/users/me"
-                className="nav-item nav-link"
-                eventKey="3"
-              >
-                {t("NavBar.MyProfile")}
-              </NavLink>
+              <>
+                <NavLink
+                  to="/users/me"
+                  className="nav-item nav-link"
+                  eventKey="3"
+                >
+                  {t("NavBar.Profile")}
+                </NavLink>
+                <NavLink
+                  to="/guild"
+                  className="nav-item nav-link"
+                  eventKey="3"
+                >
+                  {t("NavBar.Guild")}
+                </NavLink>
+              </>
             ) : (
               <> </>
             )}
@@ -79,19 +79,11 @@ class LegacyTopBar extends React.Component {
               </NavDropdown.Item>
             </NavDropdown>
             {this.state.user ? (
-              <NavLink
-                to="/logout"
-                className="nav-item nav-link"
-                eventKey="4"
-              >
+              <NavLink to="/logout" className="nav-item nav-link" eventKey="4">
                 {t("NavBar.Logout")}
               </NavLink>
             ) : (
-              <NavLink
-                to="/login"
-                className="nav-item nav-link"
-                eventKey="5"
-              >
+              <NavLink to="/login" className="nav-item nav-link" eventKey="5">
                 {t("NavBar.Login")}
               </NavLink>
             )}

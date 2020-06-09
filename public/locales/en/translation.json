@@ -4,13 +4,29 @@
     "Home": "Home",
     "About": "About",
     "Login": "Login",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "Profile": "Profile",
+    "Guild": "Guild"
   },
   "Login": {
     "Title": "Login with"
   },
   "Notices": {
     "HasLogin": "Login success",
-    "HasLogout": "Logged Out Successfully"
+    "HasLogout": "Logged Out Successfully",
+    "Copy": "Copy!"
+  },
+  "Alerts": {
+    "NotLogin": "Not signed in",
+    "AuthFailed": "Authentication failed! Please login again",
+    "ProfileNoPerms": "You don't have permission to access this profile",
+    "Error": "ERROR"
+  },
+  "Profile": {
+    "UID": "In-game ID: ",
+    "UID_Null": "Unbound",
+    "Guild": "Guild: ",
+    "Guild_Null": "Not joined",
+    "Created_at": "Created at: "
   }
 }
