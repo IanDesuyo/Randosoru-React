@@ -32,26 +32,32 @@ class LegacyUserProfile extends React.Component {
   }
 
   getUser(id) {
-    if (id !== "me" && id.length > 6) {
-      return this.setState({ check_code: 400 });
+    if (id !== "me" && id.length < 6) {
+      return this.handleError(404);
     }
     if (id === "me" && AuthService.currentUserValue) {
+      if (localStorage.getItem("me")) {
+        let temp = JSON.parse(localStorage.getItem("me"));
+        if (temp.exp > Date.now()) {
+          return this.setState({ user: temp, check_code: 200 });
+        }
+      }
       axios
         .get("/api/profile/users/me", {
           headers: { Authorization: "Bearer " + AuthService.currentUserValue },
         })
         .then((res) => {
           this.setState({ user: res.data, check_code: 200 });
+          localStorage.setItem(
+            "me",
+            JSON.stringify({ exp: Date.now() + 600000, ...res.data })
+          );
         })
         .catch((error) => {
-          if (error.response.status === 401) {
-            this.setState({ check_code: 4012 });
-          } else {
-            this.setState({ check_code: 500 });
-          }
+          return this.handleError(error.response.status);
         });
     } else if (id === "me" && !AuthService.currentUserValue) {
-      this.setState({ check_code: 4011 });
+      return this.handleError(4011);
     } else {
       axios
         .get("/api/profile/users/" + id)
@@ -59,12 +65,24 @@ class LegacyUserProfile extends React.Component {
           this.setState({ user: res.data, check_code: 200 });
         })
         .catch((error) => {
-          if (error.response.status === 403) {
-            this.setState({ check_code: 403 });
-          } else {
-            this.setState({ check_code: 500 });
-          }
+          return this.handleError(error.response.status);
         });
+      return;
+    }
+  }
+
+  handleError(code) {
+    switch (code) {
+      case 401:
+        return this.setState({ check_code: 401 });
+      case 4011:
+        return this.setState({ check_code: 4011 });
+      case 403:
+        return this.setState({ check_code: 403 });
+      case 404:
+        return this.setState({ check_code: 404 });
+      default:
+        return this.setState({ check_code: 500 });
     }
   }
 
@@ -73,6 +91,14 @@ class LegacyUserProfile extends React.Component {
     switch (this.state.check_code) {
       case 0:
         return <> </>;
+      case 401:
+        return (
+          <div className="container mt-3">
+            <div className="alert alert-danger" role="alert">
+              <Link to="/logout">{t("Alerts.AuthFailed")}</Link>
+            </div>
+          </div>
+        );
       case 4011:
         return (
           <div className="container mt-3">
@@ -81,19 +107,19 @@ class LegacyUserProfile extends React.Component {
             </div>
           </div>
         );
-      case 4012:
-        return (
-          <div className="container mt-3">
-            <div className="alert alert-danger" role="alert">
-              <Link to="/logout">{t("Alerts.AuthFailed")}</Link>
-            </div>
-          </div>
-        );
       case 403:
         return (
           <div className="container mt-3">
             <div className="alert alert-warning" role="alert">
-            {t("Alerts.ProfileNoPerms")}
+              {t("Alerts.ProfileNoPerms")}
+            </div>
+          </div>
+        );
+      case 404:
+        return (
+          <div className="container mt-3">
+            <div className="alert alert-danger" role="alert">
+              {t("Alerts.UserNotFound")}
             </div>
           </div>
         );
@@ -101,7 +127,7 @@ class LegacyUserProfile extends React.Component {
         return (
           <div className="container mt-3">
             <div className="alert alert-danger" role="alert">
-            {t("Alerts.Error")}
+              {t("Alerts.Error")}
             </div>
           </div>
         );
@@ -120,7 +146,7 @@ class LegacyUserProfile extends React.Component {
                 <h4 className="mt-0">
                   {this.state.user.name}
                   <small
-                    className="ml-2 text-muted"
+                    className="ml-3 text-muted btn btn-outline-light btn-sm"
                     onClick={() => {
                       navigator.clipboard.writeText(this.state.user.id);
                       toastr.info(t("Notices.Copy"), "", {

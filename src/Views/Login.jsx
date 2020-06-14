@@ -27,7 +27,7 @@ export default function Login(props) {
               onClick={(e) => {
                 e.preventDefault();
                 AuthService.login_discord();
-                toastr.info("跳轉中...", "", {closeButton:true, positionClass: "toast-bottom-right"});
+                toastr.info(t("Notices.Redirect"), "", {closeButton:true, positionClass: "toast-bottom-right"});
               }}
             >
               <FontAwesomeIcon icon={faDiscord} size="6x" color="#7289DA" />

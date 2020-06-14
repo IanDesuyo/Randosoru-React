@@ -28,6 +28,7 @@ function login_discord() {
 
 function logout() {
   localStorage.removeItem("token");
+  localStorage.removeItem("me");
   UserSubject.next(null);
 }
 

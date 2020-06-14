@@ -14,7 +14,8 @@
   "Notices": {
     "HasLogin": "Login success",
     "HasLogout": "Logged Out Successfully",
-    "Copy": "Copy!"
+    "Copy": "Copy!",
+    "Redirect": "Redirecting..."
   },
   "Alerts": {
     "NotLogin": "Not signed in",
