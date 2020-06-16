@@ -1,98 +1,189 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
-import { AuthService } from "../Services/Auth/AuthService";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { withStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 import { withTranslation } from "react-i18next";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import Drawer from "@material-ui/core/Drawer";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import HomeIcon from "@material-ui/icons/Home";
+import { Link } from "react-router-dom";
+import { Button } from "@material-ui/core";
+import { AuthService } from "../Services/AuthService";
+import toastr from "toastr";
+import LanguageIcon from "@material-ui/icons/Language";
+const useStyles = (theme) => ({
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: "auto",
+  },
+});
 
 class LegacyTopBar extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      drawer: false,
+      anchor: null,
       user: null,
     };
   }
 
+  Authsubscribe = null;
+
   componentWillMount() {
-    AuthService.currentUser.subscribe((x) => this.setState({ user: x }));
+    this.Authsubscribe = AuthService.currentUser.subscribe((x) =>
+      this.setState({ user: x })
+    );
+  }
+
+  componentWillUnmount() {
+    this.Authsubscribe.unsubscribe();
   }
 
   render() {
+    const { classes } = this.props;
     const { t, i18n } = this.props;
     return (
-      <Navbar
-        bg="dark"
-        expand="lg"
-        sticky="top"
-        variant="dark"
-        collapseOnSelect
-      >
-        <Link to="/" className="navbar-brand">
-          {t("Brand")}
-        </Link>
-        <Navbar.Toggle />
-        <Navbar.Collapse>
-          <Nav className="mr-auto">
-            <NavLink exact to="/" className="nav-item nav-link" eventKey="1">
-              {t("NavBar.Home")}
-            </NavLink>
-            <NavLink to="/about" className="nav-item nav-link" eventKey="2">
-              {t("NavBar.About")}
-            </NavLink>
-            {this.state.user ? (
-              <>
-                <NavLink
-                  to="/users/me"
-                  className="nav-item nav-link"
-                  eventKey="3"
-                >
-                  {t("NavBar.Profile")}
-                </NavLink>
-                <NavLink
-                  to="/guild"
-                  className="nav-item nav-link"
-                  eventKey="3"
-                >
-                  {t("NavBar.Guild")}
-                </NavLink>
-              </>
-            ) : (
-              <> </>
-            )}
-          </Nav>
-          <Nav>
-            <NavDropdown
-              title={<FontAwesomeIcon icon={faGlobe} />}
-              id="collasible-nav-dropdown"
-              className="mr-4"
+      <React.Fragment>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="menu"
+              onClick={() => this.setState({ drawer: true })}
             >
-              <NavDropdown.Item onClick={() => i18n.changeLanguage("zh-TW")}>
-                繁體中文
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => i18n.changeLanguage("ja")}>
-                日本語
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => i18n.changeLanguage("en")}>
-                English
-              </NavDropdown.Item>
-            </NavDropdown>
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              {t("Title")}
+            </Typography>
             {this.state.user ? (
-              <NavLink to="/logout" className="nav-item nav-link" eventKey="4">
-                {t("NavBar.Logout")}
-              </NavLink>
+              <div>
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={(event) =>
+                    this.setState({ anchor: event.currentTarget })
+                  }
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={this.state.anchor}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={!!this.state.anchor}
+                  onClose={() => this.setState({ anchor: null })}
+                >
+                  <MenuItem
+                    component={Link}
+                    to="/users/me"
+                    onClick={() => this.setState({ anchor: null })}
+                  >
+                    {t("Profile")}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      AuthService.logout();
+                      toastr.success(t("Notices.HasLogout"), "", {
+                        closeButton: true,
+                        positionClass: "toast-bottom-right",
+                      });
+                      this.setState({ anchor: false });
+                    }}
+                  >
+                    {t("Logout")}
+                  </MenuItem>
+                </Menu>
+              </div>
             ) : (
-              <NavLink to="/login" className="nav-item nav-link" eventKey="5">
-                {t("NavBar.Login")}
-              </NavLink>
+              <Button
+                variant="contained"
+                disableElevation
+                component={Link}
+                to="/login"
+              >
+                {t("Login")}
+              </Button>
             )}
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          anchor="left"
+          open={this.state.drawer}
+          onClose={() => this.setState({ drawer: false })}
+        >
+          <List className={classes.list}>
+            <ListItem
+              button
+              key="Home"
+              component={Link}
+              to="/"
+              onClick={() => this.setState({ drawer: false })}
+            >
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+
+            <ListItem
+              button
+              key="Language"
+              onClick={() => i18n.changeLanguage("zh-TW")}
+            >
+              <ListItemIcon>
+                <LanguageIcon />
+              </ListItemIcon>
+              <ListItemText primary="zh-TW" />
+            </ListItem>
+
+            <ListItem
+              button
+              key="Language"
+              onClick={() => i18n.changeLanguage("ja")}
+            >
+              <ListItemIcon>
+                <LanguageIcon />
+              </ListItemIcon>
+              <ListItemText primary="ja" />
+            </ListItem>
+          </List>
+        </Drawer>
+      </React.Fragment>
     );
   }
 }
 
 const TopBar = withTranslation()(LegacyTopBar);
-export default TopBar;
+export default withStyles(useStyles, { withTheme: true })(TopBar);

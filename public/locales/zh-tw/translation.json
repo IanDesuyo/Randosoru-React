@@ -1,34 +1,22 @@
 {
-  "Brand": "公會管理協會",
-  "NavBar": {
-    "Home": "首頁",
-    "About": "關於",
-    "Login": "登入",
-    "Logout": "登出",
-    "Profile": "個人檔案",
-    "Guild": "戰隊"
-  },
-  "Login": {
-    "Title": "透過以下方式登入:"
-  },
+  "Title": "公會管理協會",
+  "Login": "登入",
+  "Logout": "登出",
+  "Profile": "個人檔案",
+  "Redirecting": "跳轉中...",
   "Notices": {
-    "HasLogin": "已登入",
-    "HasLogout": "已登出",
-    "Copy": "Copy!",
-    "Redirect": "跳轉中..."
+    "HasLogout": "已登出"
   },
+  "UID": "遊戲ID",
+  "UID_Null": "未綁定",
+  "JoinedGuild": "所屬戰隊",
+  "Guild_Null": "未加入",
+  "CreatedAt": "創建時間",
   "Alerts": {
     "NotLogin": "尚未登入!",
     "AuthFailed": "驗證失敗! 請重新登入",
     "ProfileNoPerms": "你沒有權限訪問此個人檔案",
     "UserNotFound": "我找不到此人ㄉ檔案... ~(>_<。)＼",
     "Error": "發生錯誤"
-  },
-  "Profile": {
-    "UID": "遊戲ID: ",
-    "UID_Null": "未綁定",
-    "Guild": "所屬戰隊: ",
-    "Guild_Null": "未加入",
-    "Created_at": "創建時間: "
   }
 }

@@ -1,17 +1,37 @@
 import React from "react";
-import { AuthService } from "../Services/Auth/AuthService";
+import { AuthService } from "../Services/AuthService";
 import axios from "axios";
 import { withTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import toastr from "toastr";
+import Container from "@material-ui/core/Container";
+import MuiAlert from "@material-ui/lab/Alert";
+import Box from "@material-ui/core/Box";
+import Avatar from "@material-ui/core/Avatar";
+import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import { Grid } from "@material-ui/core";
+
+const useStyles = (theme) => ({
+  avatar_box: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    width: theme.spacing(15),
+    height: theme.spacing(15),
+  },
+});
 
 class LegacyUserProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      check_code: 0,
+      check_code: 200,
       user: {
-        name: "Loading...",
+        name: "ユウキ",
         id: "",
         avatar: "https://i.imgur.com/e4KrYHe.png",
         uid: "",
@@ -54,7 +74,7 @@ class LegacyUserProfile extends React.Component {
           );
         })
         .catch((error) => {
-          return this.handleError(error.response.status);
+          return this.handleError(500);
         });
     } else if (id === "me" && !AuthService.currentUserValue) {
       return this.handleError(4011);
@@ -87,99 +107,73 @@ class LegacyUserProfile extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     const { t } = this.props;
-    switch (this.state.check_code) {
-      case 0:
-        return <> </>;
-      case 401:
-        return (
-          <div className="container mt-3">
-            <div className="alert alert-danger" role="alert">
-              <Link to="/logout">{t("Alerts.AuthFailed")}</Link>
-            </div>
-          </div>
-        );
-      case 4011:
-        return (
-          <div className="container mt-3">
-            <div className="alert alert-warning" role="alert">
-              {t("Alerts.NotLogin")}
-            </div>
-          </div>
-        );
-      case 403:
-        return (
-          <div className="container mt-3">
-            <div className="alert alert-warning" role="alert">
-              {t("Alerts.ProfileNoPerms")}
-            </div>
-          </div>
-        );
-      case 404:
-        return (
-          <div className="container mt-3">
-            <div className="alert alert-danger" role="alert">
-              {t("Alerts.UserNotFound")}
-            </div>
-          </div>
-        );
-      case 500:
-        return (
-          <div className="container mt-3">
-            <div className="alert alert-danger" role="alert">
-              {t("Alerts.Error")}
-            </div>
-          </div>
-        );
-      default:
-        return (
-          <div className="container mt-3">
-            <div className="media">
-              <img
-                src={this.state.user.avatar}
-                className="align-self-start mr-3 rounded"
-                alt={this.state.user.name + "'s avatar"}
-                width="128"
-                height="128"
-              />
-              <div className="media-body">
-                <h4 className="mt-0">
-                  {this.state.user.name}
-                  <small
-                    className="ml-3 text-muted btn btn-outline-light btn-sm"
-                    onClick={() => {
-                      navigator.clipboard.writeText(this.state.user.id);
-                      toastr.info(t("Notices.Copy"), "", {
-                        closeButton: true,
-                        positionClass: "toast-bottom-right",
-                      });
-                    }}
-                  >
-                    ({this.state.user.id})
-                  </small>
-                </h4>
-                <p>
-                  {t("Profile.UID")}
-                  {this.state.user.uid
-                    ? this.state.user.uid
-                    : t("Profile.UID_Null")}
-                </p>
-                <p>
-                  {t("Profile.Guild")}
-                  {this.state.user.guild
-                    ? this.state.user.guild.name
-                    : t("Profile.Guild_Null")}
-                </p>
-                <p>
-                  {t("Profile.Created_at")} {this.state.user.created_at}
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+    if (this.state.check_code === 200) {
+      return (
+        <Container>
+          <Box mt={3} className={classes.avatar_box}>
+            <Avatar src={this.state.user.avatar} className={classes.avatar} />
+            <Typography component="h1" gutterBottom variant="h5">
+              {this.state.user.name}
+            </Typography>
+          </Box>
+          <Divider />
+          <Grid>
+            <Typography gutterBottom variant="body1">
+              {t("UID")}
+              {": "}
+              {this.state.user.uid ? this.state.user.uid : t("UID_Null")}
+            </Typography>
+          </Grid>
+          <Grid>
+            <Typography gutterBottom variant="body1">
+              {t("JoinedGuild")}
+              {": "}
+              {this.state.user.guild
+                ? this.state.user.guild.name
+                : t("Guild_Null")}
+            </Typography>
+          </Grid>
+          <Grid>
+            <Typography gutterBottom variant="body1">
+              {t("CreatedAt")}
+              {": "}
+              {this.state.user.created_at}
+            </Typography>
+          </Grid>
+        </Container>
+      );
+    } else {
+      let err;
+      switch (this.state.check_code) {
+        case 401:
+          err = <Link to="/logout">{t("Alerts.AuthFailed")}</Link>;
+          break;
+        case 4011:
+          err = t("Alerts.NotLogin");
+          break;
+        case 403:
+          err = t("Alerts.ProfileNoPerms");
+          break;
+        case 404:
+          err = t("Alerts.UserNotFound");
+          break;
+        default:
+          err = t("Alerts.Error");
+      }
+      return (
+        <Container>
+          <Box mt={3}>
+            <MuiAlert elevation={6} variant="filled" severity="error">
+              {err}
+            </MuiAlert>
+          </Box>
+        </Container>
+      );
     }
   }
 }
 
 const UserProfile = withTranslation()(LegacyUserProfile);
-export default UserProfile;
+export default withStyles(useStyles, { withTheme: true })(UserProfile);

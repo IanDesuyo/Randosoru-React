@@ -1,60 +1,59 @@
-import React from "react";
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
-import TopBar from "./Components/Navbar";
-import Footer from "./Components/Footer"
-import Home from "./Views/Home"
-import UserProfile from "./Views/UserProfile"
-import Login from "./Views/Login";
-import Logout from "./Views/Logout";
-import {OauthRedirect} from "./Views/OauthRedirect"
+import React, { Fragment, Suspense, lazy } from "react";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import Navbar from "./Components/Navbar";
+import Loader from "./Views/Loader";
 
-export default function App() {
+const Index = lazy(() => import("./Views/Index"));
+const Login = lazy(() => import("./Views/Login"));
+const DiscordOauthRedirect = lazy(() => import("./Views/DiscordOauthRedirect"));
+const UserProfile = lazy(() => import("./Views/UserProfile"));
+
+function App() {
   return (
     <BrowserRouter>
-      <TopBar />
-      <Switch>
-        <Route path="/about" component={About} />
-        <Route path={["/users", "/user", "/profile"]} component={UserLayout} />
-        <Route path={["/guilds", "/guild"]} component={GuildLayout} />
-        <Route path="/login" component={AuthLayout} />
-        <Route path="/logout" component={Logout} />
-        <Route exact path="/" component={Home} />
-      </Switch>
-      <Footer />
+      <Suspense fallback={<Fragment />}>
+        <Switch>
+          <Route path="/" exact>
+            <Navbar />
+            <Suspense fallback={<Fragment />}>
+              <Index />
+            </Suspense>
+          </Route>
+          <Route path="/login" component={AuthLayout} />
+          <Route path={["/users", "/user"]}>
+            <Navbar />
+            <Suspense fallback={<Fragment />}>
+              <UserLayout />
+            </Suspense>
+          </Route>
+        </Switch>
+      </Suspense>
     </BrowserRouter>
-  );
-}
-
-function UserLayout() {
-  return (
-    <Switch>
-      <Route exact path="/users/:id" component={UserProfile}/>
-      <Redirect exact from="/user/:id" to="/users/:id"/>
-      <Redirect exact from="/users" to="/users/me"/>
-      <Redirect exact from="/user" to="/users/me"/>
-    </Switch>
-  );
-}
-
-function GuildLayout() {
-  return (
-    <Switch>
-      <Route exact path="/guilds/:id" component={UserProfile}/>
-      <Redirect exact from="/guild/:id" to="/guilds/:id"/>
-      <Redirect exact from="/guild" to="/guilds/"/>
-    </Switch>
   );
 }
 
 function AuthLayout() {
   return (
     <Switch>
-      <Route exact path="/login/oauth/discord" component={OauthRedirect.discord} />
+      <Route
+        exact
+        path="/login/oauth/discord"
+        component={DiscordOauthRedirect}
+      />
       <Route exact path="/login" component={Login} />
     </Switch>
   );
 }
 
-function About() {
-  return <h2>About</h2>;
+function UserLayout() {
+  return (
+    <Switch>
+      <Route exact path="/users/:id" component={UserProfile} />
+      <Redirect exact from="/user/:id" to="/users/:id" />
+      <Redirect exact from="/users" to="/users/me" />
+      <Redirect exact from="/user" to="/users/me" />
+    </Switch>
+  );
 }
+
+export default App;
