@@ -1,17 +1,19 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import toastr from "toastr";
 import { AuthService } from "../Services/AuthService";
+import toastr from "toastr";
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Avatar from "@material-ui/core/Avatar";
+import {
+  Grid,
+  Typography,
+  Paper,
+  Avatar,
+  Box,
+  Button,
+  SvgIcon,
+} from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
-import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
-import SvgIcon from "@material-ui/core/SvgIcon";
 import MuiAlert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
@@ -123,8 +125,8 @@ export default function Login(props) {
               variant="contained"
               className={classes.line_btn}
               onClick={() => {
-                // AuthService.login_discord();
-                toastr.info("還沒做好啦", "", {
+                AuthService.login_line();
+                toastr.info(t("Redirecting"), "", {
                   closeButton: true,
                   positionClass: "toast-bottom-right",
                 });
