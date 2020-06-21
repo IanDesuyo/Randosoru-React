@@ -7,7 +7,7 @@ const Login = lazy(() => import("./Views/Login"));
 const DiscordOauthRedirect = lazy(() => import("./Views/DiscordOauthRedirect"));
 const LineOauthRedirect = lazy(() => import("./Views/LineOauthRedirect"));
 const UserProfile = lazy(() => import("./Views/UserProfile"));
-const GuildRecord = lazy(() => import("./Views/GuildRecord"));
+const FormRecord = lazy(() => import("./Views/FormRecord"));
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
           <Route exact path="/" component={HomeLayout} />
           <Route path="/login" component={AuthLayout} />
           <Route path={["/users", "/user"]} component={UserLayout} />
-          <Route path="/guilds/:id" component={GuildLayout} />
+          <Route path={["/forms", "/form"]} component={FormLayout} />
         </Switch>
       </Suspense>
     </BrowserRouter>
@@ -69,15 +69,15 @@ function UserLayout() {
   );
 }
 
-function GuildLayout() {
+function FormLayout() {
   return (
     <Fragment>
       <Navbar />
       <Suspense fallback={<Fragment />}>
         <Switch>
-          <Route exact path="/guilds/:month/:week/:id" component={GuildRecord} />
-          <Redirect exact from="/guild/:month/:week/:id" to="/guilds/:month/:week/:id" />
-          <Redirect exact from="/guilds" to={"/guilds/" + new Date().getFullYear + new Date().getMonth+1 + "/" + 1 + "/:id"} />
+          <Route exact path="/forms/:id/week/:week" component={FormRecord} />
+          <Redirect exact from="/form/:id/week/:week" to="/forms/:id/week/:week" />
+          <Redirect exact from="/forms/:id" to="/forms/:id/week/1" />
         </Switch>
       </Suspense>
     </Fragment>

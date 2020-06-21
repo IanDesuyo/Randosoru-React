@@ -7,6 +7,7 @@
   "Notices": {
     "HasLogout": "已登出"
   },
+  "Name": "名稱",
   "UID": "遊戲ID",
   "UID_Null": "未綁定",
   "JoinedGuild": "所屬戰隊",
@@ -20,11 +21,11 @@
     "Error": "發生錯誤"
   },
   "Record": {
-    "TitleFormat": "{{month}} 第{{week}}週 - {{boss}}王",
-    "User": {
-      "Name": "名稱"
-    },
+    "TitleFormat": "{{title}} - 第{{week}}週",
     "DialogTitle": "詳細記錄",
+    "AddRecord": "新增紀錄",
+    "EditRecord": "修改紀錄",
+    "Delete": "刪除紀錄",
     "Comment": "備註",
     "Damage": "傷害",
     "Status": "狀態",
@@ -37,6 +38,12 @@
     "WaitingMention": "等待@mention",
     "Complete": "完成",
     "Dead": "暴死",
-    "NeedHelp": "求救"
-  }
+    "NeedHelp": "求救",
+    "Error": {
+      "Damage": "傷害需要介於1跟50000000之間"
+    }
+  },
+  "Cancel": "取消",
+  "Add": "新增",
+  "Edit": "修改"
 }

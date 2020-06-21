@@ -4,13 +4,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
 import RecordTable from "../Components/RecordTable";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import Axios from "axios";
+import { useState } from "react";
 
 function TabPanel(props) {
-  const { value, index, month, week, guild_id } = props;
+  const { value, index, title, month, week, form_id } = props;
 
   return (
     <div role="tabpanel" hidden={value !== index}>
@@ -19,8 +20,9 @@ function TabPanel(props) {
           open={value === index}
           boss={index + 1}
           month={month}
+          title={title}
           week={week}
-          guild_id={guild_id}
+          form_id={form_id}
         />
       )}
     </div>
@@ -42,8 +44,30 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BossTabs() {
   const classes = useStyles();
-  let { month, week, id } = useParams();
-  const [value, setValue] = React.useState(0);
+  let { week, id } = useParams();
+  const [value, setValue] = useState(0);
+  const [title, setTitle] = useState("Loading...");
+  const [month, setMonth] = useState();
+
+  const fetchFormData = () => {
+    if (id === undefined) {
+      return;
+    }
+    Axios.get("/api/forms/" + id)
+      .then((res) => {
+        setTitle(res.data.title);
+        setMonth(res.data.month);
+      })
+      .catch((error) => {
+        console.log(error);
+        return null;
+      });
+  };
+
+  useEffect(() => {
+    fetchFormData();
+    return () => {};
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -65,35 +89,40 @@ export default function BossTabs() {
         index={0}
         month={month}
         week={week}
-        guild_id={id}
+        form_id={id}
+        title={title}
       />
       <TabPanel
         value={value}
         index={1}
         month={month}
         week={week}
-        guild_id={id}
+        form_id={id}
+        title={title}
       />
       <TabPanel
         value={value}
         index={2}
         month={month}
         week={week}
-        guild_id={id}
+        form_id={id}
+        title={title}
       />
       <TabPanel
         value={value}
         index={3}
         month={month}
         week={week}
-        guild_id={id}
+        form_id={id}
+        title={title}
       />
       <TabPanel
         value={value}
         index={4}
         month={month}
         week={week}
-        guild_id={id}
+        form_id={id}
+        title={title}
       />
     </div>
   );

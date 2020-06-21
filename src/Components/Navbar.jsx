@@ -206,13 +206,13 @@ export default function NavBar() {
             button
             key="Guild Test"
             component={Link}
-            to="/guilds/202006/1/605314314768875520"
+            to="/forms/7971936a78db4a0292bf1e2bc117d281/1"
             onClick={handleDrawerClose}
           >
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
-            <ListItemText primary="Guild Test" />
+            <ListItemText primary="Form Test" />
           </ListItem>
 
           <ListItem button key="lang" onClick={openLangDialog}>

@@ -3,9 +3,10 @@ import axios from "axios";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import MuiAlert from "@material-ui/lab/Alert";
 import Container from "@material-ui/core/Container";
-import Box from "@material-ui/core/Box"
+import Box from "@material-ui/core/Box";
 
 export default function discord() {
+  document.title = "Redirecting...";
   let querys = new URLSearchParams(window.location.search);
   if (querys.get("code")) {
     axios
@@ -13,10 +14,11 @@ export default function discord() {
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         localStorage.removeItem("me");
+        localStorage.removeItem("login_status");
         window.close();
       })
       .catch((error) => {
-        localStorage.setItem("login_failed", error.response.data.detail);
+        localStorage.setItem("login_status", error.response.data.detail);
         localStorage.removeItem("me");
         localStorage.removeItem("token");
         window.close();

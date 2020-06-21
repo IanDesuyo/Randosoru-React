@@ -67,9 +67,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const failed_msg = localStorage.getItem("login_failed");
-if (failed_msg) {
-  localStorage.removeItem("login_failed");
+const login_status = localStorage.getItem("login_status");
+if (login_status) {
+  localStorage.removeItem("login_status");
 }
 
 export default function Login(props) {
@@ -145,7 +145,7 @@ export default function Login(props) {
               Signin with Line
             </Button>
           </Box>
-          {failed_msg ? (
+          {login_status ? (
             <Box mt={4}>
               <MuiAlert
                 elevation={6}
@@ -153,7 +153,7 @@ export default function Login(props) {
                 severity="error"
                 className={classes.error_msg}
               >
-                {failed_msg}
+                {login_status}
               </MuiAlert>
             </Box>
           ) : (

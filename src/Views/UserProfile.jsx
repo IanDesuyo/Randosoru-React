@@ -139,7 +139,7 @@ class LegacyUserProfile extends React.Component {
             <Typography gutterBottom variant="body1">
               {t("CreatedAt")}
               {": "}
-              {this.state.user.created_at}
+              {new Date(this.state.user.created_at * 1000).toLocaleString()}
             </Typography>
           </Grid>
         </Container>

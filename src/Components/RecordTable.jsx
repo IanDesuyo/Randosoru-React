@@ -23,7 +23,7 @@ import { useTranslation } from "react-i18next";
 import { Avatar, Typography, Grid, makeStyles } from "@material-ui/core";
 import { useEffect } from "react";
 import { AuthService } from "../Services/AuthService";
-import RecordDialog from "./RecordDialog";
+import { RecordDialog } from "./RecordDialog";
 import Axios from "axios";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -74,27 +74,49 @@ const useStyles = makeStyles((theme) => ({
 export default function RecordTable(props) {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { open, month, week, boss, guild_id } = props;
-  const [isLoading, setLoading] = useState(false);
+  const { open, title, month, week, boss, form_id } = props;
+  const [isLoading, setLoading] = useState(true);
   const [recordDialogData, setRecordDialog] = useState(null);
-  const [inputBoxOpen, setInputBox] = useState(false);
+  const [recordDialogOpen, setRecordDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
   const [rowData, setRowData] = useState();
 
   const handleRecordDialogOpen = (event, rowData) => {
-    console.log(rowData);
     setRecordDialog(rowData);
+    setRecordDialogOpen(true);
   };
 
-  const handleRecordDialogClose = () => {
-    setRecordDialog(null);
+  const handleRecordDialogClose = (value) => {
+    if (!value) {
+      setRecordDialogOpen(false);
+      setTimeout(() => {
+        setRecordDialog(null);
+      }, 200);
+    } else {
+      Axios.post(
+        "/api/forms/" + form_id + "/week/" + week + "/boss/" + boss,
+        { ...value, month: month },
+        {
+          headers: { Authorization: "Bearer " + AuthService.currentUserValue },
+        }
+      )
+        .then((res) => {
+          fetchData();
+        })
+        .catch((error) => {
+          console.log(error.response);
+          console.log(error);
+        });
+      setRecordDialogOpen(false);
+      setTimeout(() => {
+        setRecordDialog(null);
+      }, 200);
+    }
   };
 
   const fetchData = () => {
     setLoading(true);
-    Axios.get(
-      "/api/guilds/" + guild_id + "/records/" + month + "/" + week + "/" + boss
-    )
+    Axios.get("/api/forms/" + form_id + "/week/" + week + "/boss/" + boss)
       .then((res) => {
         setRowData(res.data);
         setLoading(false);
@@ -127,7 +149,10 @@ export default function RecordTable(props) {
     <>
       <MaterialTable
         icons={tableIcons}
-        title={t("Record.TitleFormat", { month: month, week: week, boss: boss })}
+        title={t("Record.TitleFormat", {
+          title: title,
+          week: week,
+        })}
         columns={[
           {
             title: "ID",
@@ -137,7 +162,7 @@ export default function RecordTable(props) {
             hidden: true,
           },
           {
-            title: t("Record.User.Name"),
+            title: t("Name"),
             field: "user.name",
             render: (rowData) => (
               <Grid container>
@@ -187,9 +212,18 @@ export default function RecordTable(props) {
       <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Fab color="primary" className={classes.fab}>
+      <Fab
+        color="primary"
+        className={classes.fab}
+        onClick={handleRecordDialogOpen}
+      >
         <AddIcon />
       </Fab>
+      <RecordDialog
+        open={recordDialogOpen}
+        onClose={handleRecordDialogClose}
+        rowData={recordDialogData}
+      />
     </>
   );
 }
