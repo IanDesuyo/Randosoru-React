@@ -16,6 +16,7 @@ import Grid from "@material-ui/core/Grid";
 import Input from "@material-ui/core/Input";
 import Divider from "@material-ui/core/Divider";
 import { useEffect } from "react";
+
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
@@ -46,6 +47,7 @@ export function RecordDialog(props) {
     setStatus(rowData ? rowData.status : 1);
     setDamage(rowData ? rowData.damage : null);
   }, [rowData]);
+
   const handleClose = () => {
     onClose(false);
   };
@@ -62,8 +64,8 @@ export function RecordDialog(props) {
   const handleChangeComment = (event) => {
     let value = event.target.value;
     console.log(value.length);
-    if (value.length > 20) {
-      setCommentError(t("Record.Error.Damage"));
+    if (value.length > 40) {
+      setCommentError(t("Record.Error.Comment"));
     }
     setComment(value);
     setCommentError(null);
@@ -92,7 +94,7 @@ export function RecordDialog(props) {
         {rowData ? t("Record.EditRecord") : t("Record.AddRecord")}
       </DialogTitle>
       <DialogContent>
-        {/* <p>{JSON.stringify(rowData)}</p> */}
+        <p>{JSON.stringify(rowData)}</p>
         <Grid container className={classes.container}>
           <Grid item>
             <FormControl className={classes.formControl}>
@@ -105,17 +107,17 @@ export function RecordDialog(props) {
                 input={<Input />}
                 defaultValue={status}
               >
-                <MenuItem value={1}>{t("Record.Formal")}</MenuItem>
-                <MenuItem value={2}>{t("Record.Reimburse")}</MenuItem>
-                <MenuItem value={3}>{t("Record.Kyaru")}</MenuItem>
+                <MenuItem value={1}>{t("Record.StatusType.1")}</MenuItem>
+                <MenuItem value={2}>{t("Record.StatusType.2")}</MenuItem>
+                <MenuItem value={3}>{t("Record.StatusType.3")}</MenuItem>
                 <Divider />
-                <MenuItem value={11}>{t("Record.InBattle")}</MenuItem>
-                <MenuItem value={12}>{t("Record.Waiting")}</MenuItem>
-                <MenuItem value={13}>{t("Record.WaitingMention")}</MenuItem>
+                <MenuItem value={11}>{t("Record.StatusType.11")}</MenuItem>
+                <MenuItem value={12}>{t("Record.StatusType.12")}</MenuItem>
+                <MenuItem value={13}>{t("Record.StatusType.13")}</MenuItem>
                 <Divider />
-                <MenuItem value={21}>{t("Record.Complete")}</MenuItem>
-                <MenuItem value={22}>{t("Record.Dead")}</MenuItem>
-                <MenuItem value={23}>{t("Record.NeedHelp")}</MenuItem>
+                <MenuItem value={21}>{t("Record.StatusType.21")}</MenuItem>
+                <MenuItem value={22}>{t("Record.StatusType.22")}</MenuItem>
+                <MenuItem value={23}>{t("Record.StatusType.23")}</MenuItem>
                 <Divider />
                 <MenuItem value={99} disabled={!rowData}>
                   {t("Record.Delete")}
@@ -143,6 +145,19 @@ export function RecordDialog(props) {
                 onChange={handleChangeComment}
                 error={!!commentError}
                 helperText={commentError}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={11}>
+            <FormControl className={classes.formControl} fullWidth>
+              <TextField
+                label={t("Record.LastModified")}
+                defaultValue={
+                  rowData
+                    ? new Date(rowData.last_modified * 1000).toLocaleString()
+                    : t("Null")
+                }
+                disabled
               />
             </FormControl>
           </Grid>

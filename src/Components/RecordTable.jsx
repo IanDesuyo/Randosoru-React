@@ -24,6 +24,7 @@ import { Avatar, Typography, Grid, makeStyles } from "@material-ui/core";
 import { useEffect } from "react";
 import { AuthService } from "../Services/AuthService";
 import { RecordDialog } from "./RecordDialog";
+import { RecordDetails } from "./RecordDetails";
 import Axios from "axios";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -74,16 +75,32 @@ const useStyles = makeStyles((theme) => ({
 export default function RecordTable(props) {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { open, title, month, week, boss, form_id } = props;
+  const { title, month, week, boss, form_id } = props;
   const [isLoading, setLoading] = useState(true);
   const [recordDialogData, setRecordDialog] = useState(null);
   const [recordDialogOpen, setRecordDialogOpen] = useState(false);
+  const [recordDetailsOpen, setRecordDetailsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
   const [rowData, setRowData] = useState();
 
   const handleRecordDialogOpen = (event, rowData) => {
-    setRecordDialog(rowData);
-    setRecordDialogOpen(true);
+    if (rowData) {
+      setRecordDialog(rowData);
+      if (getID() === rowData.user.id) {
+        setRecordDialogOpen(true);
+      } else {
+        setRecordDetailsOpen(true);
+      }
+    } else {
+      setRecordDialogOpen(true);
+    }
+  };
+
+  const handleRecordDetailsClose = (value) => {
+    setRecordDetailsOpen(false);
+    setTimeout(() => {
+      setRecordDialog(null);
+    }, 200);
   };
 
   const handleRecordDialogClose = (value) => {
@@ -93,6 +110,7 @@ export default function RecordTable(props) {
         setRecordDialog(null);
       }, 200);
     } else {
+      setLoading(true);
       Axios.post(
         "/api/forms/" + form_id + "/week/" + week + "/boss/" + boss,
         { ...value, month: month },
@@ -143,7 +161,7 @@ export default function RecordTable(props) {
       Authsubscribe.unsubscribe();
       setCurrentUser(null);
     };
-  }, []);
+  }, [form_id, week]);
 
   return (
     <>
@@ -172,11 +190,9 @@ export default function RecordTable(props) {
                     * You
                   </Typography>
                 ) : (
-                  <>
-                    <Typography variant="body1" className={classes.username}>
-                      {rowData.user.name}
-                    </Typography>
-                  </>
+                  <Typography variant="body1" className={classes.username}>
+                    {rowData.user.name}
+                  </Typography>
                 )}
               </Grid>
             ),
@@ -185,43 +201,67 @@ export default function RecordTable(props) {
           {
             title: t("Record.Damage"),
             field: "damage",
+            export: true,
             hidden: true,
             emptyValue: t("Record.Null"),
-            export: true,
           },
           {
             title: t("Record.Status"),
             field: "status",
             lookup: {
-              1: t("Record.Formal"),
-              2: t("Record.Reimburse"),
-              3: t("Record.Kyaru"),
-              11: t("Record.InBattle"),
-              12: t("Record.Waiting"),
-              13: t("Record.WaitingMention"),
-              21: t("Record.Complete"),
-              22: t("Record.Dead"),
-              23: t("Record.NeedHelp"),
+              1: t("Record.StatusType.1"),
+              2: t("Record.StatusType.2"),
+              3: t("Record.StatusType.3"),
+              11: t("Record.StatusType.11"),
+              12: t("Record.StatusType.12"),
+              13: t("Record.StatusType.13"),
+              21: t("Record.StatusType.21"),
+              22: t("Record.StatusType.22"),
+              23: t("Record.StatusType.23"),
+              99: t("Record.StatusType.99"),
             },
           },
         ]}
         data={rowData}
-        options={{ search: false, exportButton: true, exportAllData: true }}
+        options={{
+          search: false,
+          exportButton: true,
+          exportAllData: true,
+          paging: false,
+        }}
         onRowClick={handleRecordDialogOpen}
+        localization={{
+          body: {
+            emptyDataSourceMessage: t("Record.NoRecord"),
+          },
+          toolbar: {
+            exportTitle: t("Record.Export"),
+            exportName: t("Record.ExportCSV"),
+          },
+        }}
       />
       <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Fab
-        color="primary"
-        className={classes.fab}
-        onClick={handleRecordDialogOpen}
-      >
-        <AddIcon />
-      </Fab>
+      {currentUser ? (
+        <Fab
+          color="primary"
+          className={classes.fab}
+          onClick={handleRecordDialogOpen}
+        >
+          <AddIcon />
+        </Fab>
+      ) : (
+        <></>
+      )}
       <RecordDialog
         open={recordDialogOpen}
         onClose={handleRecordDialogClose}
+        rowData={recordDialogData}
+      />
+      <RecordDetails
+        open={recordDetailsOpen}
+        onClose={handleRecordDetailsClose}
         rowData={recordDialogData}
       />
     </>

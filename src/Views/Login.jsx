@@ -4,15 +4,13 @@ import { useTranslation } from "react-i18next";
 import { AuthService } from "../Services/AuthService";
 import toastr from "toastr";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  Typography,
-  Paper,
-  Avatar,
-  Box,
-  Button,
-  SvgIcon,
-} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Avatar from "@material-ui/core/Avatar";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import SvgIcon from "@material-ui/core/SvgIcon";
 import LockOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
 import MuiAlert from "@material-ui/lab/Alert";
 

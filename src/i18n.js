@@ -8,7 +8,8 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: "zh-tw",
+    fallbackLng: "zh-TW",
+    supportedLngs: ["zh-TW", "ja", "en"],
     debug: true,
     detection: {
       order: ["querystring", "localStorage"],

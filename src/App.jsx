@@ -27,7 +27,7 @@ function App() {
 function HomeLayout() {
   return (
     <Fragment>
-      <Navbar />
+      <Navbar position="sticky"/>
       <Suspense fallback={<Fragment />}>
         <Index />
       </Suspense>
@@ -56,7 +56,7 @@ function AuthLayout() {
 function UserLayout() {
   return (
     <Fragment>
-      <Navbar />
+      <Navbar position="sticky"/>
       <Suspense fallback={<Fragment />}>
         <Switch>
           <Route exact path="/users/:id" component={UserProfile} />
@@ -72,7 +72,7 @@ function UserLayout() {
 function FormLayout() {
   return (
     <Fragment>
-      <Navbar />
+      <Navbar position="static"/>
       <Suspense fallback={<Fragment />}>
         <Switch>
           <Route exact path="/forms/:id/week/:week" component={FormRecord} />

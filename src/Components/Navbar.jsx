@@ -3,27 +3,17 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AuthService } from "../Services/AuthService";
 import toastr from "toastr";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  MenuItem,
-  Menu,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Button,
-  Dialog,
-  DialogTitle
-} from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
+import Button from "@material-ui/core/Button";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import HomeIcon from "@material-ui/icons/Home";
-import LanguageIcon from "@material-ui/icons/Language";
 import { makeStyles } from "@material-ui/core/styles";
+import LeftDrawer from "./LeftDrawer";
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -35,50 +25,13 @@ const useStyles = makeStyles((theme) => ({
   list: {
     width: 250,
   },
-  fullList: {
-    width: "auto",
-  },
 }));
 
-function LangDialog(props) {
-  const { onClose, open } = props;
-
-  const handleClose = () => {
-    onClose(null);
-  };
-
-  const handleListItemClick = (value) => {
-    onClose(value);
-  };
-
-  return (
-    <Dialog onClose={handleClose} open={open} maxWidth="sm" fullWidth={true}>
-      <DialogTitle>Select Language</DialogTitle>
-      <List>
-        {[
-          ["zh-TW", "繁體中文"],
-          ["ja", "日本語"],
-          ["en", "English"],
-        ].map((lang, index) => (
-          <ListItem
-            button
-            onClick={() => handleListItemClick(lang[0])}
-            key={index}
-          >
-            <ListItemText primary={lang[1]} />
-          </ListItem>
-        ))}
-      </List>
-    </Dialog>
-  );
-}
-
-export default function NavBar() {
-  const { t, i18n } = useTranslation();
+export default function NavBar(props) {
+  const { t } = useTranslation();
   const classes = useStyles();
-
+  const { position } = props;
   const [drawerOpen, setDrawer] = useState(false);
-  const [langDialogOpen, setLangDialog] = useState(false);
   const [anchorOpen, setAnchor] = useState();
   const [currentUser, setCurrentUser] = useState();
 
@@ -106,18 +59,6 @@ export default function NavBar() {
     setAnchor(null);
   };
 
-  const openLangDialog = () => {
-    setDrawer(false);
-    setLangDialog(true);
-  };
-
-  const handleLangDialogClose = (value) => {
-    if (value) {
-      i18n.changeLanguage(value);
-    }
-    setLangDialog(false);
-  };
-
   const handleLogout = () => {
     setAnchor(null);
     AuthService.logout();
@@ -129,7 +70,7 @@ export default function NavBar() {
 
   return (
     <React.Fragment>
-      <AppBar position="static">
+      <AppBar position={position}>
         <Toolbar>
           <IconButton
             edge="start"
@@ -186,45 +127,7 @@ export default function NavBar() {
           )}
         </Toolbar>
       </AppBar>
-      
-      <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerClose}>
-        <List className={classes.list}>
-          <ListItem
-            button
-            key="Home"
-            component={Link}
-            to="/"
-            onClick={handleDrawerClose}
-          >
-            <ListItemIcon>
-              <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-
-          <ListItem
-            button
-            key="Guild Test"
-            component={Link}
-            to="/forms/7971936a78db4a0292bf1e2bc117d281/1"
-            onClick={handleDrawerClose}
-          >
-            <ListItemIcon>
-              <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Form Test" />
-          </ListItem>
-
-          <ListItem button key="lang" onClick={openLangDialog}>
-            <ListItemIcon>
-              <LanguageIcon />
-            </ListItemIcon>
-            <ListItemText primary="Change Language" />
-          </ListItem>
-        </List>
-      </Drawer>
-
-      <LangDialog open={langDialogOpen} onClose={handleLangDialogClose} />
+      <LeftDrawer open={drawerOpen} onClose={handleDrawerClose} />
     </React.Fragment>
   );
 }

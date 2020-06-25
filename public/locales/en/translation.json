@@ -7,6 +7,7 @@
   "Notices": {
     "HasLogout": "Logged Out Successfully"
   },
+  "Name": "Name",
   "UID": "In-game ID",
   "UID_Null": "Unbound",
   "JoinedGuild": "Guild",
@@ -16,6 +17,34 @@
     "NotLogin": "Not signed in",
     "AuthFailed": "Authentication failed! Please login again",
     "ProfileNoPerms": "You don't have permission to access this profile",
+    "UserNotFound": "I can't find the person u want... ~(>_<。)＼",
     "Error": "ERROR"
-  }
+  },
+  "Record": {
+    "TitleFormat": "{{title}} - Week {{week}}",
+    "AddRecord": "Add Record",
+    "EditRecord": "Edit Record",
+    "MoreDetails": "More Details",
+    "Delete": "Delete record",
+    "Deleted": "Deleted",
+    "Comment": "Comment",
+    "Damage": "Damage",
+    "Status": "Status",
+    "Null": "Not reported",
+    "Formal": "Formal",
+    "Reimburse": "Reimburse",
+    "Kyaru": "Kyaru",
+    "InBattle": "In Battle",
+    "Waiting": "Waiting",
+    "WaitingMention": "Waiting @mention",
+    "Complete": "Complete",
+    "Dead": "Dead",
+    "NeedHelp": "Need Help",
+    "Error": {
+      "Damage": "Damage need between 1 and 50000000"
+    }
+  },
+  "Cancel": "Cancel",
+  "Add": "Add",
+  "Edit": "Edit"
 }
