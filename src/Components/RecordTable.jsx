@@ -228,6 +228,37 @@ export default function RecordTable(props) {
           exportButton: true,
           exportAllData: true,
           paging: false,
+          exportCsv: (columnList, initialData) => {
+            const columns = columnList.filter(columnDef => {
+              return columnDef.field && columnDef.export !== false ;
+            }) ;
+
+            const data = initialData.map(rowData => columns.map(columnDef => {
+              if (columnDef.field === "user.name") return rowData.user.name ;
+              if (columnDef.field === "status") return t(`Record.StatusType.${rowData[columnDef.field]}`) ;
+              return columnDef.render ? columnDef.render(rowData) : rowData[columnDef.field] ;
+            })) ;
+
+            var csvAry = [] ;
+
+            csvAry.push(columns.map(column => column.title)) ;
+            csvAry = csvAry.concat(data) ;
+
+            let csvContent = "data:text/csv;charset=utf-8,\ufeff" ;
+            csvContent += '"' + csvAry.map(row => row.join('","')).join('"\n"') + '"' ;
+
+            var uri = encodeURI(csvContent) ;
+            var link = window.document.createElement("a") ;
+            link.setAttribute("href", uri) ;
+            link.setAttribute("download", t("Record.TitleFormat", {
+              title: title,
+              week: week,
+            }) + '.csv') ;
+
+            window.document.body.appendChild(link) ;
+            link.click() ;
+            link.remove() ;
+          }
         }}
         onRowClick={handleRecordDialogOpen}
         localization={{
