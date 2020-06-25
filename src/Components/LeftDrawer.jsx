@@ -8,7 +8,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import LanguageIcon from "@material-ui/icons/Language";
 import ListItemText from "@material-ui/core/ListItemText";
 import HomeIcon from "@material-ui/icons/Home";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
@@ -65,7 +65,6 @@ export default function LeftDrawer(props) {
 
   useEffect(() => {
     let url = window.location.pathname.split("/");
-    console.log(url);
     if (url[1] === "forms" && url[3] === "week") {
       setForm_id(url[2]);
       setWeek(parseInt(url[4]));
@@ -101,20 +100,6 @@ export default function LeftDrawer(props) {
           ) : (
             <></>
           )}
-
-          <ListItem
-            button
-            key="3"
-            component={Link}
-            to="/forms/5b248793b1c14af2980eb501ad7cfc6f/week/1"
-            onClick={handleClose}
-          >
-            <ListItemIcon>
-              <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Form Test" />
-          </ListItem>
-
           <ListItem button key="99" onClick={openLangDialog}>
             <ListItemIcon>
               <LanguageIcon />
@@ -173,8 +158,24 @@ function ChooseWeek(props) {
   const { onClose, open, form_id, week } = props;
   const classes = useStyles();
   const { t } = useTranslation();
+  let history = useHistory();
 
   const handleClose = () => {
+    onClose(false);
+  };
+
+  const manualChoose = () => {
+    let week_in;
+    while (typeof week_in !== "number") {
+      week_in = parseInt(prompt(t("Drawer.ChooseWeekPrompt")));
+      if (week_in === null || isNaN(week_in)) {
+        return;
+      }
+      if (week_in < 1 || week_in > 100) {
+        week_in = null;
+      }
+    }
+    history.push("/forms/" + form_id + "/week/" + week_in);
     onClose(false);
   };
 
@@ -182,9 +183,7 @@ function ChooseWeek(props) {
     <Dialog onClose={handleClose} open={open} maxWidth="sm">
       <DialogTitle>{t("Drawer.ChooseWeek")}</DialogTitle>
       <DialogContent className={classes.chooseWeekBtn}>
-        Form: {form_id}
-        <br />
-        Week: {week}
+        {t("Drawer.CurrentWeek")}: {week}
         <ButtonGroup color="primary">
           <Button
             component={Link}
@@ -202,13 +201,7 @@ function ChooseWeek(props) {
           >
             {"<"}
           </Button>
-          <Button
-            component={Link}
-            to={"/forms/" + form_id + "/week/" + 5}
-            onClick={handleClose}
-          >
-            選擇
-          </Button>
+          <Button onClick={manualChoose}>{t("Choose")}</Button>
           <Button
             component={Link}
             to={"/forms/" + form_id + "/week/" + (week + 1)}

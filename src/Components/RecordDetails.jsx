@@ -32,7 +32,6 @@ export function RecordDetails(props) {
     <Dialog onClose={handleClose} open={open} maxWidth="sm" fullWidth={true}>
       <DialogTitle>{t("Record.RecordDetails")}</DialogTitle>
       <DialogContent>
-        <p>{JSON.stringify(rowData)}</p>
         <List>
           <DetailItem
             icon={<Avatar src={rowData ? rowData.user.avatar : null} />}

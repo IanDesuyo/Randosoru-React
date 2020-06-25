@@ -15,7 +15,9 @@
   "CreatedAt": "創建時間",
   "Drawer": {
     "Home": "首頁",
-    "ChooseWeek": "選擇周次",
+    "ChooseWeek": "選擇週次",
+    "ChooseWeekPrompt": "請輸入週次 (1~100)",
+    "CurrentWeek": "當前週次",
     "Language": "選擇語言"
   },
   "Alerts": {
@@ -61,6 +63,7 @@
   "Cancel": "取消",
   "Add": "新增",
   "Edit": "修改",
+  "Choose": "選擇",
   "Null": "無",
   "ERROR": "錯誤"
 }

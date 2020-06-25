@@ -4,7 +4,8 @@ import { Container } from "@material-ui/core";
 export default function Index(props) {
     return (
       <Container>
-        <div>HELLO</div>
+        <h1>Home</h1>
+        <p>但這裡什麼都沒有</p>
       </Container>
     );
   }

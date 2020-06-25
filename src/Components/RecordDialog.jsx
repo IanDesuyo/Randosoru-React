@@ -63,7 +63,6 @@ export function RecordDialog(props) {
 
   const handleChangeComment = (event) => {
     let value = event.target.value;
-    console.log(value.length);
     if (value.length > 40) {
       setCommentError(t("Record.Error.Comment"));
     }
@@ -94,7 +93,6 @@ export function RecordDialog(props) {
         {rowData ? t("Record.EditRecord") : t("Record.AddRecord")}
       </DialogTitle>
       <DialogContent>
-        <p>{JSON.stringify(rowData)}</p>
         <Grid container className={classes.container}>
           <Grid item>
             <FormControl className={classes.formControl}>
