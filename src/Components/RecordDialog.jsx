@@ -36,11 +36,11 @@ export function RecordDialog(props) {
   const classes = useStyles();
   const { onClose, open, rowData } = props;
   const { t } = useTranslation();
-  const [comment, setComment] = useState();
-  const [status, setStatus] = useState();
-  const [damage, setDamage] = useState();
-  const [damageError, setDamageError] = useState();
-  const [commentError, setCommentError] = useState();
+  const [comment, setComment] = useState(null);
+  const [status, setStatus] = useState(1);
+  const [damage, setDamage] = useState(null);
+  const [damageError, setDamageError] = useState(null);
+  const [commentError, setCommentError] = useState(null);
 
   useEffect(() => {
     setComment(rowData ? rowData.comment : null);
@@ -49,6 +49,11 @@ export function RecordDialog(props) {
   }, [rowData]);
 
   const handleClose = () => {
+    setComment(null);
+    setStatus(1);
+    setDamage(null);
+    setDamageError(null);
+    setCommentError(null);
     onClose(false);
   };
 
@@ -65,9 +70,10 @@ export function RecordDialog(props) {
     let value = event.target.value;
     if (value.length > 40) {
       setCommentError(t("Record.Error.Comment"));
+    } else {
+      setComment(value);
+      setCommentError(null);
     }
-    setComment(value);
-    setCommentError(null);
   };
 
   const handleChangeStatus = (event) => {
@@ -169,7 +175,7 @@ export function RecordDialog(props) {
           onClick={handleSave}
           color="primary"
           variant="contained"
-          disabled={commentError || damageError}
+          disabled={!!commentError || !!damageError}
         >
           {rowData ? t("Edit") : t("Add")}
         </Button>

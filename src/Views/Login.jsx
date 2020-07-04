@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
   },
   image: {
-    backgroundImage: "url(/images/randosoru.png)",
+    backgroundImage: "url(/static/images/randosoru.png)",
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"
@@ -129,6 +129,7 @@ export default function Login(props) {
                   positionClass: "toast-bottom-right",
                 });
               }}
+              disabled
             >
               <SvgIcon
                 viewBox="0 0 448 512"
@@ -159,7 +160,7 @@ export default function Login(props) {
           )}
           <Box mt={5}>
             <Typography variant="body2" color="textSecondary" align="center">
-              Copyright © Project AI キャル {new Date().getFullYear()}.
+              Copyright © randosoru.me {new Date().getFullYear()}.
             </Typography>
           </Box>
         </div>

@@ -1,6 +1,7 @@
 import React, { Fragment, Suspense, lazy } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Navbar from "./Components/Navbar";
+import Analytics from "react-router-ga";
 
 const Index = lazy(() => import("./Views/Index"));
 const Login = lazy(() => import("./Views/Login"));
@@ -12,14 +13,16 @@ const FormRecord = lazy(() => import("./Views/FormRecord"));
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<Fragment />}>
-        <Switch>
-          <Route exact path="/" component={HomeLayout} />
-          <Route path="/login" component={AuthLayout} />
-          <Route path={["/users", "/user"]} component={UserLayout} />
-          <Route path={["/forms", "/form"]} component={FormLayout} />
-        </Switch>
-      </Suspense>
+      <Analytics id="UA-170804064-1">
+        <Suspense fallback={<Fragment />}>
+          <Switch>
+            <Route exact path="/" component={HomeLayout} />
+            <Route path="/login" component={AuthLayout} />
+            <Route path={["/users", "/user"]} component={UserLayout} />
+            <Route path={["/forms", "/form"]} component={FormLayout} />
+          </Switch>
+        </Suspense>
+      </Analytics>
     </BrowserRouter>
   );
 }
@@ -27,7 +30,7 @@ function App() {
 function HomeLayout() {
   return (
     <Fragment>
-      <Navbar position="sticky"/>
+      <Navbar position="sticky" />
       <Suspense fallback={<Fragment />}>
         <Index />
       </Suspense>
@@ -43,11 +46,7 @@ function AuthLayout() {
         path="/login/oauth/discord"
         component={DiscordOauthRedirect}
       />
-      <Route
-        exact
-        path="/login/oauth/line"
-        component={LineOauthRedirect}
-      />
+      <Route exact path="/login/oauth/line" component={LineOauthRedirect} />
       <Route exact path="/login" component={Login} />
     </Switch>
   );
@@ -56,7 +55,7 @@ function AuthLayout() {
 function UserLayout() {
   return (
     <Fragment>
-      <Navbar position="sticky"/>
+      <Navbar position="sticky" />
       <Suspense fallback={<Fragment />}>
         <Switch>
           <Route exact path="/users/:id" component={UserProfile} />
@@ -72,11 +71,15 @@ function UserLayout() {
 function FormLayout() {
   return (
     <Fragment>
-      <Navbar position="static"/>
+      <Navbar position="static" />
       <Suspense fallback={<Fragment />}>
         <Switch>
           <Route exact path="/forms/:id/week/:week" component={FormRecord} />
-          <Redirect exact from="/form/:id/week/:week" to="/forms/:id/week/:week" />
+          <Redirect
+            exact
+            from="/form/:id/week/:week"
+            to="/forms/:id/week/:week"
+          />
           <Redirect exact from="/forms/:id" to="/forms/:id/week/1" />
         </Switch>
       </Suspense>

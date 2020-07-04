@@ -15,10 +15,12 @@
   "CreatedAt": "創建時間",
   "Drawer": {
     "Home": "首頁",
-    "ChooseWeek": "選擇週次",
-    "ChooseWeekPrompt": "請輸入週次 (1~100)",
-    "CurrentWeek": "當前週次",
-    "Language": "選擇語言"
+    "ChooseWeek": "選擇周次",
+    "ChooseWeekPrompt": "請輸入周次 (1~100)",
+    "CurrentWeek": "當前周次",
+    "Language": "選擇語言",
+    "Favorites": "我的最愛",
+    "LastWeek": "最後檢視周次"
   },
   "Alerts": {
     "NotLogin": "尚未登入!",
@@ -26,10 +28,12 @@
     "ProfileNoPerms": "你沒有權限訪問此個人檔案",
     "UserNotFound": "我找不到此人ㄉ檔案... ~(>_<。)＼",
     "Error": "發生錯誤",
-    "FormNotFound": "找不到此報名表"
+    "FormNotFound": "找不到此報名表",
+    "FormBadID": "報名表格式錯誤",
+    "FormBadWeek": "周次格式錯誤"
   },
   "Record": {
-    "TitleFormat": "第{{week}}週 - {{title}}",
+    "TitleFormat": "第{{week}}周 - {{title}}",
     "AddRecord": "新增紀錄",
     "EditRecord": "修改紀錄",
     "RecordDetails": "詳細內容",

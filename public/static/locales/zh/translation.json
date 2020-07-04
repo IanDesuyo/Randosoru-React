@@ -1,0 +1,73 @@
+{
+  "Title": "公會管理協會",
+  "Login": "登入",
+  "Logout": "登出",
+  "Profile": "個人檔案",
+  "Redirecting": "跳轉中...",
+  "Notices": {
+    "HasLogout": "已登出"
+  },
+  "Name": "名稱",
+  "UID": "遊戲ID",
+  "UID_Null": "未綁定",
+  "JoinedGuild": "所屬戰隊",
+  "Guild_Null": "未加入",
+  "CreatedAt": "創建時間",
+  "Drawer": {
+    "Home": "首頁",
+    "ChooseWeek": "選擇周次",
+    "ChooseWeekPrompt": "請輸入周次 (1~100)",
+    "CurrentWeek": "當前周次",
+    "Language": "選擇語言",
+    "Favorites": "我的最愛",
+    "LastWeek": "最後檢視周次"
+  },
+  "Alerts": {
+    "NotLogin": "尚未登入!",
+    "AuthFailed": "驗證失敗! 請重新登入",
+    "ProfileNoPerms": "你沒有權限訪問此個人檔案",
+    "UserNotFound": "我找不到此人ㄉ檔案... ~(>_<。)＼",
+    "Error": "發生錯誤",
+    "FormNotFound": "找不到此報名表",
+    "FormBadID": "報名表格式錯誤",
+    "FormBadWeek": "周次格式錯誤"
+  },
+  "Record": {
+    "TitleFormat": "第{{week}}周 - {{title}}",
+    "AddRecord": "新增紀錄",
+    "EditRecord": "修改紀錄",
+    "RecordDetails": "詳細內容",
+    "Delete": "刪除紀錄",
+    "Deleted": "已刪除",
+    "Comment": "備註",
+    "Damage": "傷害",
+    "Status": "狀態",
+    "LastModified": "最後編輯",
+    "Null": "未回報",
+    "StatusType": {
+      "1": "正式刀",
+      "2": "補償刀",
+      "3": "凱留刀",
+      "11": "戰鬥中",
+      "12": "等待中",
+      "13": "等待@mention",
+      "21": "完成",
+      "22": "暴死",
+      "23": "求救",
+      "99": "已刪除"
+    },
+    "Error": {
+      "Damage": "傷害需要介於1跟50000000之間",
+      "Comment": "備註不能超過40字"
+    },
+    "NoRecord": "尚未有人報名",
+    "Export": "輸出",
+    "ExportCSV": "輸出成CSV"
+  },
+  "Cancel": "取消",
+  "Add": "新增",
+  "Edit": "修改",
+  "Choose": "選擇",
+  "Null": "無",
+  "ERROR": "錯誤"
+}

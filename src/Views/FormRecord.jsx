@@ -59,7 +59,11 @@ export default function BossTabs() {
 
   const fetchFormData = () => {
     if (id.length !== 32) {
-      setStatus(400);
+      setStatus(4001);
+      return;
+    }
+    if (isNaN(parseInt(week))) {
+      setStatus(4002);
       return;
     }
     Axios.get("/api/forms/" + id)
@@ -75,7 +79,6 @@ export default function BossTabs() {
 
   useEffect(() => {
     fetchFormData();
-    return () => {};
   }, [id]);
 
   const handleChange = (event, newValue) => {
@@ -94,6 +97,26 @@ export default function BossTabs() {
         <Box mt={3}>
           <MuiAlert elevation={6} variant="filled" severity="error">
             {t("Alerts.FormNotFound")}
+          </MuiAlert>
+        </Box>
+      </Container>
+    );
+  } else if (status === 4001) {
+    return (
+      <Container>
+        <Box mt={3}>
+          <MuiAlert elevation={6} variant="filled" severity="error">
+            {t("Alerts.FormBadID")}
+          </MuiAlert>
+        </Box>
+      </Container>
+    );
+  } else if (status === 4002) {
+    return (
+      <Container>
+        <Box mt={3}>
+          <MuiAlert elevation={6} variant="filled" severity="error">
+            {t("Alerts.FormBadWeek")}
           </MuiAlert>
         </Box>
       </Container>

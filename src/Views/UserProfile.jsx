@@ -3,7 +3,6 @@ import { AuthService } from "../Services/AuthService";
 import axios from "axios";
 import { withTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import toastr from "toastr";
 import Container from "@material-ui/core/Container";
 import MuiAlert from "@material-ui/lab/Alert";
 import Box from "@material-ui/core/Box";

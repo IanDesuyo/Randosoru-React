@@ -13,8 +13,7 @@ export const AuthService = {
 
 function login_discord() {
   let win = window.open(
-    "https://discordapp.com/api/oauth2/authorize?client_id=609318305718730790&redirect_uri=https://test.randosoru.me/login/oauth/discord&response_type=code&scope=identify&prompt=none",
-    // "https://discordapp.com/api/oauth2/authorize?client_id=609318305718730790&redirect_uri=http://127.0.0.1/login/oauth/discord&response_type=code&scope=identify&prompt=none",
+    "https://discordapp.com/api/oauth2/authorize?client_id=609318305718730790&redirect_uri=https://guild.randosoru.me/login/oauth/discord&response_type=code&scope=identify&prompt=none",
     "window",
     "toolbar=no, menubar=no, resizable=no height=600 width=400"
   );
@@ -28,7 +27,7 @@ function login_discord() {
 
 function login_line() {
   let win = window.open(
-    "https://access.line.me/dialog/oauth/weblogin?response_type=code&client_id=1654370605&redirect_uri=https://test.randosoru.me/login/oauth/line&state=123",
+    "https://access.line.me/dialog/oauth/weblogin?response_type=code&client_id=1654370605&redirect_uri=https://guild.randosoru.me/login/oauth/line&state=123",
     "window",
     "toolbar=no, menubar=no, resizable=no height=600 width=400"
   );

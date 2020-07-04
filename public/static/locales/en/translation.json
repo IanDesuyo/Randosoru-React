@@ -1,0 +1,73 @@
+{
+  "Title": "Guild Manage Union",
+  "Login": "Login",
+  "Logout": "Logout",
+  "Profile": "Profile",
+  "Redirecting": "Redirecting...",
+  "Notices": {
+    "HasLogout": "Logged Out Successfully"
+  },
+  "Name": "Name",
+  "UID": "In-game ID",
+  "UID_Null": "Unbound",
+  "JoinedGuild": "Guild",
+  "Guild_Null": "Not joined",
+  "CreatedAt": "Created at",
+  "Drawer": {
+    "Home": "Home",
+    "ChooseWeek": "Choose Week",
+    "ChooseWeekPrompt": "Please enter the number (1~100)",
+    "CurrentWeek": "Current Week",
+    "Language": "Choose Language",
+    "Favorites": "My Favorites",
+    "LastWeek": "Last viewed week"
+  },
+  "Alerts": {
+    "NotLogin": "Not signed in",
+    "AuthFailed": "Authentication failed! Please login again",
+    "ProfileNoPerms": "You don't have permission to access this profile",
+    "UserNotFound": "I can't find the person u want... ~(>_<。)＼",
+    "Error": "ERROR",
+    "FormNotFound": "Form not found...",
+    "FormBadID": "Wrong form ID format",
+    "FormBadWeek": "Wrong week format"
+  },
+  "Record": {
+    "TitleFormat": "{{title}} - Week {{week}}",
+    "AddRecord": "Add Record",
+    "EditRecord": "Edit Record",
+    "RecordDetails": "More Details",
+    "Delete": "Delete record",
+    "Deleted": "Deleted",
+    "Comment": "Comment",
+    "Damage": "Damage",
+    "Status": "Status",
+    "LastModified": "Last Modified",
+    "Null": "Not reported",
+    "StatusType": {
+      "1": "Formal",
+      "2": "Reimburse",
+      "3": "Kyaru",
+      "11": "In Battle",
+      "12": "Waiting",
+      "13": "Waiting @mention",
+      "21": "Complete",
+      "22": "Dead",
+      "23": "Need Help",
+      "99": "Deleted"
+    },
+    "Error": {
+      "Damage": "Damage need between 1 and 50000000",
+      "Comment": "Comment can't exceed 40 characters"
+    },
+    "NoRecord": "No one has signed up",
+    "Export": "Export",
+    "ExportCSV": "Export as CSV"
+  },
+  "Cancel": "Cancel",
+  "Add": "Add",
+  "Edit": "Edit",
+  "Choose": "Choose",
+  "Null": "Null",
+  "ERROR": "ERROR"
+}

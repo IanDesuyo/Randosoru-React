@@ -1,21 +1,8 @@
 import React from "react";
 import MaterialTable from "material-table";
 import { forwardRef } from "react";
-import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
-import Check from "@material-ui/icons/Check";
-import ChevronLeft from "@material-ui/icons/ChevronLeft";
-import ChevronRight from "@material-ui/icons/ChevronRight";
-import Clear from "@material-ui/icons/Clear";
-import DeleteOutline from "@material-ui/icons/DeleteOutline";
-import Edit from "@material-ui/icons/Edit";
-import FilterList from "@material-ui/icons/FilterList";
-import FirstPage from "@material-ui/icons/FirstPage";
-import LastPage from "@material-ui/icons/LastPage";
-import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
-import Search from "@material-ui/icons/Search";
-import ViewColumn from "@material-ui/icons/ViewColumn";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useState } from "react";
@@ -28,29 +15,13 @@ import { RecordDetails } from "./RecordDetails";
 import Axios from "axios";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
+import StarIcon from "@material-ui/icons/Star";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
+import { FavoriteService } from "../Services/FavoriteService";
 
 const tableIcons = {
-  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
-  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => (
-    <ChevronLeft {...props} ref={ref} />
-  )),
-  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -82,6 +53,7 @@ export default function RecordTable(props) {
   const [recordDetailsOpen, setRecordDetailsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
   const [rowData, setRowData] = useState();
+  const [isFavorite, setFavorite] = useState(false);
 
   const handleRecordDialogOpen = (event, rowData) => {
     if (rowData) {
@@ -145,6 +117,23 @@ export default function RecordTable(props) {
       });
   };
 
+  const checkFavorite = () => {
+    if (FavoriteService.check(form_id)) {
+      setFavorite(true);
+      FavoriteService.set(form_id, week, title);
+    }
+  };
+
+  const handleFavorite = () => {
+    if (isFavorite) {
+      FavoriteService.remove(form_id);
+      setFavorite(false);
+    } else {
+      FavoriteService.set(form_id, week, title);
+      setFavorite(true);
+    }
+  };
+
   const getID = () => {
     try {
       let user = JSON.parse(atob(currentUser.split(".")[1]));
@@ -157,12 +146,13 @@ export default function RecordTable(props) {
   useEffect(() => {
     const Authsubscribe = AuthService.currentUser.subscribe(setCurrentUser);
     fetchData();
+    checkFavorite();
     return () => {
       Authsubscribe.unsubscribe();
       setCurrentUser(null);
     };
   }, [form_id, week]);
-
+  
   return (
     <>
       <MaterialTable
@@ -270,6 +260,16 @@ export default function RecordTable(props) {
             exportName: t("Record.ExportCSV"),
           },
         }}
+        actions={[
+          {
+            icon: () => {
+              return isFavorite ? <StarIcon /> : <StarBorderIcon />;
+            },
+            tooltip: "Filter",
+            onClick: handleFavorite,
+            isFreeAction: true,
+          },
+        ]}
       />
       <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />

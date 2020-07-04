@@ -14,7 +14,14 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import DialogContent from "@material-ui/core/DialogContent";
+import Divider from "@material-ui/core/Divider";
+import Collapse from "@material-ui/core/Collapse";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import ListIcon from "@material-ui/icons/List";
 import { useEffect } from "react";
+import { FavoriteService } from "../Services/FavoriteService";
+import StarIcon from "@material-ui/icons/Star";
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -28,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
 }));
 
 export default function LeftDrawer(props) {
@@ -38,6 +48,8 @@ export default function LeftDrawer(props) {
   const [chooseWeekOpen, setChooseWeekOpen] = useState(false);
   const [week, setWeek] = useState();
   const [form_id, setForm_id] = useState();
+  const [favList, setFavList] = useState(null);
+  const [favDrawer, setFavDrawer] = useState(false);
 
   const openLangDialog = () => {
     onClose(false);
@@ -63,6 +75,9 @@ export default function LeftDrawer(props) {
     setChooseWeekOpen(false);
   };
 
+  const handleFavDrawer = () => {
+    setFavDrawer(!favDrawer);
+  };
   useEffect(() => {
     let url = window.location.pathname.split("/");
     if (url[1] === "forms" && url[3] === "week") {
@@ -72,6 +87,11 @@ export default function LeftDrawer(props) {
       setWeek(null);
       setForm_id(null);
     }
+    const Favsubscribe = FavoriteService.favData.subscribe(setFavList);
+    return () => {
+      Favsubscribe.unsubscribe();
+      setFavList(null);
+    };
   }, [week]);
 
   return (
@@ -100,6 +120,13 @@ export default function LeftDrawer(props) {
           ) : (
             <></>
           )}
+          <Divider />
+          <FavList
+            data={favList}
+            onClick={handleClose}
+            open={favDrawer}
+            handleDrawer={handleFavDrawer}
+          />
           <ListItem button key="99" onClick={openLangDialog}>
             <ListItemIcon>
               <LanguageIcon />
@@ -221,5 +248,47 @@ function ChooseWeek(props) {
         </ButtonGroup>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function FavList(props) {
+  const { t } = useTranslation();
+  const { data, onClick, open, handleDrawer } = props;
+  const classes = useStyles();
+  if (Object.keys(data).length === 0) {
+    return <> </>;
+  }
+  return (
+    <>
+      <ListItem button onClick={handleDrawer}>
+        <ListItemIcon>
+          <StarIcon />
+        </ListItemIcon>
+        <ListItemText primary={t("Drawer.Favorites")} />
+        {open ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {Object.keys(data).map((key, index) => (
+            <ListItem
+              button
+              key={key}
+              component={Link}
+              to={"/forms/" + key + "/week/" + data[key].week}
+              onClick={onClick}
+              className={classes.nested}
+            >
+              <ListItemIcon>
+                <ListIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={data[key].title}
+                secondary={t("Drawer.LastWeek") + ": " + data[key].week}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Collapse>
+    </>
   );
 }

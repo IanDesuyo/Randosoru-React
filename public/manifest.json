@@ -1,15 +1,26 @@
 {
-  "short_name": "ギルド管理協会",
-  "name": "Tools for プリコネR",
+  "short_name": "公會管理協會",
+  "name": "蘭德索爾 公會管理協會",
+  "description": "Tools for プリコネR\n協助您管理戰隊出刀",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "./static/images/favicon.ico",
+      "sizes": "64x64",
       "type": "image/x-icon"
+    },
+    {
+      "src": "./static/images/icon/64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "./static/images/icon/192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ],
-  "start_url": ".",
+  "start_url": "./?utm_source=web_app&utm_medium=web_app&utm_campaign=web_app",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#3f51b5",
   "background_color": "#ffffff"
 }
