@@ -51,18 +51,20 @@
       "11": "In Battle",
       "12": "Waiting",
       "13": "Waiting @mention",
-      "21": "Complete",
-      "22": "Dead",
-      "23": "Need Help",
+      "21": "Complete(Formal)",
+      "22": "Complete(Reimburse)",
+      "23": "Dead",
+      "24": "Need Help",
       "99": "Deleted"
     },
     "Error": {
-      "Damage": "Damage need between 1 and 50000000",
+      "Damage": "Damage need between 1 and 20000000",
       "Comment": "Comment can't exceed 40 characters"
     },
     "NoRecord": "No one has signed up",
     "Export": "Export",
-    "ExportCSV": "Export as CSV"
+    "ExportCSV": "Export as CSV",
+    "Favorite": "Favorite"
   },
   "Cancel": "Cancel",
   "Add": "Add",

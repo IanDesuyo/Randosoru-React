@@ -9,15 +9,16 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar, Typography, Grid, makeStyles } from "@material-ui/core";
 import { useEffect } from "react";
-import { AuthService } from "../Services/AuthService";
-import { RecordDialog } from "./RecordDialog";
-import { RecordDetails } from "./RecordDetails";
+import AuthService from "../Services/AuthService";
+import RecordDialog from "./RecordDialog";
+import RecordDetails from "./RecordDetails";
 import Axios from "axios";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import { FavoriteService } from "../Services/FavoriteService";
+import ExportCsv from "../Services/ExportCsv";
 
 const tableIcons = {
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
@@ -68,7 +69,7 @@ export default function RecordTable(props) {
     }
   };
 
-  const handleRecordDetailsClose = (value) => {
+  const handleRecordDetailsClose = () => {
     setRecordDetailsOpen(false);
     setTimeout(() => {
       setRecordDialog(null);
@@ -94,8 +95,8 @@ export default function RecordTable(props) {
           fetchData();
         })
         .catch((error) => {
-          console.log(error.response);
-          console.log(error);
+          AuthService.errorHandler(error);
+          setLoading(false);
         });
       setRecordDialogOpen(false);
       setTimeout(() => {
@@ -112,7 +113,7 @@ export default function RecordTable(props) {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        AuthService.errorHandler(error);
         setLoading(false);
       });
   };
@@ -152,7 +153,7 @@ export default function RecordTable(props) {
       setCurrentUser(null);
     };
   }, [form_id, week]);
-  
+
   return (
     <>
       <MaterialTable
@@ -168,6 +169,7 @@ export default function RecordTable(props) {
             type: "numeric",
             defaultSort: "asc",
             hidden: true,
+            export: false,
           },
           {
             title: t("Name"),
@@ -191,8 +193,7 @@ export default function RecordTable(props) {
           {
             title: t("Record.Damage"),
             field: "damage",
-            export: true,
-            hidden: true,
+            hidden: document.body.clientWidth <= 1000,
             emptyValue: t("Record.Null"),
           },
           {
@@ -208,8 +209,18 @@ export default function RecordTable(props) {
               21: t("Record.StatusType.21"),
               22: t("Record.StatusType.22"),
               23: t("Record.StatusType.23"),
+              24: t("Record.StatusType.24"),
               99: t("Record.StatusType.99"),
             },
+          },
+          {
+            title: t("Record.LastModified"),
+            field: "last_modified",
+            type: "datetime",
+            hidden: document.body.clientWidth <= 1000,
+            render: (rowData) => (
+              <p>{new Date(rowData.last_modified * 1000).toLocaleString()}</p>
+            ),
           },
         ]}
         data={rowData}
@@ -219,36 +230,16 @@ export default function RecordTable(props) {
           exportAllData: true,
           paging: false,
           exportCsv: (columnList, initialData) => {
-            const columns = columnList.filter(columnDef => {
-              return columnDef.field && columnDef.export !== false ;
-            }) ;
-
-            const data = initialData.map(rowData => columns.map(columnDef => {
-              if (columnDef.field === "user.name") return rowData.user.name ;
-              if (columnDef.field === "status") return t(`Record.StatusType.${rowData[columnDef.field]}`) ;
-              return columnDef.render ? columnDef.render(rowData) : rowData[columnDef.field] ;
-            })) ;
-
-            var csvAry = [] ;
-
-            csvAry.push(columns.map(column => column.title)) ;
-            csvAry = csvAry.concat(data) ;
-
-            let csvContent = "data:text/csv;charset=utf-8,\ufeff" ;
-            csvContent += '"' + csvAry.map(row => row.join('","')).join('"\n"') + '"' ;
-
-            var uri = encodeURI(csvContent) ;
-            var link = window.document.createElement("a") ;
-            link.setAttribute("href", uri) ;
-            link.setAttribute("download", t("Record.TitleFormat", {
-              title: title,
-              week: week,
-            }) + '.csv') ;
-
-            window.document.body.appendChild(link) ;
-            link.click() ;
-            link.remove() ;
-          }
+            ExportCsv(
+              columnList,
+              initialData,
+              t("Record.TitleFormat", {
+                title: title,
+                week: week,
+              }),
+              t
+            );
+          },
         }}
         onRowClick={handleRecordDialogOpen}
         localization={{
@@ -265,7 +256,7 @@ export default function RecordTable(props) {
             icon: () => {
               return isFavorite ? <StarIcon /> : <StarBorderIcon />;
             },
-            tooltip: "Filter",
+            tooltip: t("Record.Favorite"),
             onClick: handleFavorite,
             isFreeAction: true,
           },

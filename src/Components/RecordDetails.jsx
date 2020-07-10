@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function RecordDetails(props) {
+export default function RecordDetails(props) {
   const classes = useStyles();
   const { onClose, open, rowData } = props;
   const { t } = useTranslation();
@@ -33,20 +33,23 @@ export function RecordDetails(props) {
       <DialogTitle>{t("Record.RecordDetails")}</DialogTitle>
       <DialogContent>
         <List>
-          <DetailItem
-            icon={<Avatar src={rowData ? rowData.user.avatar : null} />}
-            text={rowData ? rowData.user.name : null}
-          />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <Avatar src={rowData ? rowData.user.avatar : null} />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={rowData ? rowData.user.name : null} />
+          </ListItem>
           <DetailItem
             icon={
               <Avatar>
                 <CommentIcon />
               </Avatar>
             }
-            text={
-              t("Record.Status") +
-              ": " +
-              (rowData ? t("Record.StatusType." + rowData.status) : t("ERROR"))
+            title={t("Record.Status")}
+            value={
+              rowData ? t("Record.StatusType." + rowData.status) : t("ERROR")
             }
           />
           <DetailItem
@@ -55,10 +58,9 @@ export function RecordDetails(props) {
                 <FavoriteIcon />
               </Avatar>
             }
-            text={
-              t("Record.Damage") +
-              ": " +
-              (rowData && rowData.damage !== null ? rowData.damage : t("Null"))
+            title={t("Record.Damage")}
+            value={
+              rowData && rowData.damage !== null ? rowData.damage : t("Null")
             }
           />
           <DetailItem
@@ -67,10 +69,9 @@ export function RecordDetails(props) {
                 <CommentIcon />
               </Avatar>
             }
-            text={
-              t("Record.Comment") +
-              ": " +
-              (rowData && rowData.comment !== "" ? rowData.comment : t("Null"))
+            title={t("Record.Comment")}
+            value={
+              rowData && rowData.comment !== "" ? rowData.comment : t("Null")
             }
           />
           <DetailItem
@@ -79,12 +80,11 @@ export function RecordDetails(props) {
                 <AccessTimeIcon />
               </Avatar>
             }
-            text={
-              t("Record.LastModified") +
-              ": " +
-              (rowData
+            title={t("Record.LastModified")}
+            value={
+              rowData
                 ? new Date(rowData.last_modified * 1000).toLocaleString()
-                : t("Null"))
+                : t("Null")
             }
           />
         </List>
@@ -94,13 +94,13 @@ export function RecordDetails(props) {
 }
 
 function DetailItem(props) {
-  const { icon, text } = props;
+  const { icon, title, value } = props;
   return (
     <ListItem>
       <ListItemAvatar>
         <Avatar>{icon}</Avatar>
       </ListItemAvatar>
-      <ListItemText primary={text} />
+      <ListItemText primary={title + ": " + value} />
     </ListItem>
   );
 }

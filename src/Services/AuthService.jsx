@@ -1,15 +1,20 @@
+import i18n from "i18next";
 import { BehaviorSubject } from "rxjs";
+import toastr from "toastr";
+
 const UserSubject = new BehaviorSubject(localStorage.getItem("token"));
 
-export const AuthService = {
+const AuthService = {
   login_discord,
   login_line,
   logout,
+  errorHandler,
   currentUser: UserSubject.asObservable(),
   get currentUserValue() {
     return UserSubject.value;
-  },
+  }
 };
+export default AuthService;
 
 function login_discord() {
   let win = window.open(
@@ -43,4 +48,27 @@ function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("me");
   UserSubject.next(null);
+}
+
+function errorHandler(error) {
+  console.log(error.response);
+  if (error.response.status === 401) {
+    if (error.response.data.detail === "Credentials expired") {
+      return errorToastr(i18n.t("Alerts.LoginExpired"));
+    }
+    if (error.response.data.detail === "Could not validate credentials") {
+      return errorToastr(i18n.t("Alerts.AuthFailed"));
+    }
+    return errorToastr(error.response.data.detail);
+  }
+  if (error.response.status === 422) {
+    return errorToastr(error.response.data.detail[0].msg);
+  }
+}
+
+function errorToastr(msg) {
+  toastr.error(msg, "", {
+    closeButton: true,
+    positionClass: "toast-bottom-right"
+  });
 }

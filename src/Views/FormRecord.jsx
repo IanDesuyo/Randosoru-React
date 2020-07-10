@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
@@ -15,31 +14,6 @@ import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useTranslation } from "react-i18next";
-
-function TabPanel(props) {
-  const { value, index, title, month, week, form_id } = props;
-
-  return (
-    <div role="tabpanel" hidden={value !== index}>
-      {value === index && (
-        <RecordTable
-          open={value === index}
-          boss={index + 1}
-          month={month}
-          title={title}
-          week={week}
-          form_id={form_id}
-        />
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -91,98 +65,56 @@ export default function BossTabs() {
         <CircularProgress color="inherit" />
       </Backdrop>
     );
-  } else if (status === 404) {
+  } else if (status === 200) {
     return (
-      <Container>
-        <Box mt={3}>
-          <MuiAlert elevation={6} variant="filled" severity="error">
-            {t("Alerts.FormNotFound")}
-          </MuiAlert>
-        </Box>
-      </Container>
+      <div className={classes.root}>
+        <AppBar position="sticky">
+          <Tabs value={value} onChange={handleChange} variant="fullWidth">
+            <Tab label="一王" />
+            <Tab label="二王" />
+            <Tab label="三王" />
+            <Tab label="四王" />
+            <Tab label="五王" />
+          </Tabs>
+        </AppBar>
+        {[0, 1, 2, 3, 4].map((index) => (
+          <div role="tabpanel" hidden={value !== index} key={index}>
+            {value === index && (
+              <RecordTable
+                boss={index + 1}
+                month={month}
+                title={title}
+                week={week}
+                form_id={id}
+              />
+            )}
+          </div>
+        ))}
+      </div>
     );
-  } else if (status === 4001) {
+  } else {
+    let error;
+    switch (status) {
+      case 404:
+        error = t("Alerts.FormNotFound");
+        break;
+      case 4001:
+        error = t("Alerts.FormBadID");
+        break;
+      case 4002:
+        error = t("Alerts.FormBadWeek");
+        break;
+      default:
+        error = t("Alerts.Error");
+    }
     return (
       <Container>
         <Box mt={3}>
           <MuiAlert elevation={6} variant="filled" severity="error">
-            {t("Alerts.FormBadID")}
-          </MuiAlert>
-        </Box>
-      </Container>
-    );
-  } else if (status === 4002) {
-    return (
-      <Container>
-        <Box mt={3}>
-          <MuiAlert elevation={6} variant="filled" severity="error">
-            {t("Alerts.FormBadWeek")}
-          </MuiAlert>
-        </Box>
-      </Container>
-    );
-  } else if (status !== 200) {
-    return (
-      <Container>
-        <Box mt={3}>
-          <MuiAlert elevation={6} variant="filled" severity="error">
-            {t("Alerts.Error")}
+            {error}
           </MuiAlert>
         </Box>
       </Container>
     );
   }
-  return (
-    <div className={classes.root}>
-      <AppBar position="sticky">
-        <Tabs value={value} onChange={handleChange} variant="fullWidth">
-          <Tab label="一王" />
-          <Tab label="二王" />
-          <Tab label="三王" />
-          <Tab label="四王" />
-          <Tab label="五王" />
-        </Tabs>
-      </AppBar>
-      <TabPanel
-        value={value}
-        index={0}
-        month={month}
-        week={week}
-        form_id={id}
-        title={title}
-      />
-      <TabPanel
-        value={value}
-        index={1}
-        month={month}
-        week={week}
-        form_id={id}
-        title={title}
-      />
-      <TabPanel
-        value={value}
-        index={2}
-        month={month}
-        week={week}
-        form_id={id}
-        title={title}
-      />
-      <TabPanel
-        value={value}
-        index={3}
-        month={month}
-        week={week}
-        form_id={id}
-        title={title}
-      />
-      <TabPanel
-        value={value}
-        index={4}
-        month={month}
-        week={week}
-        form_id={id}
-        title={title}
-      />
-    </div>
-  );
 }

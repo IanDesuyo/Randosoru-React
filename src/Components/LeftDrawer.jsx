@@ -22,6 +22,7 @@ import ListIcon from "@material-ui/icons/List";
 import { useEffect } from "react";
 import { FavoriteService } from "../Services/FavoriteService";
 import StarIcon from "@material-ui/icons/Star";
+import LangDialog from "./LangDialog";
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -78,6 +79,7 @@ export default function LeftDrawer(props) {
   const handleFavDrawer = () => {
     setFavDrawer(!favDrawer);
   };
+
   useEffect(() => {
     let url = window.location.pathname.split("/");
     if (url[1] === "forms" && url[3] === "week") {
@@ -143,41 +145,6 @@ export default function LeftDrawer(props) {
         form_id={form_id}
       />
     </React.Fragment>
-  );
-}
-
-function LangDialog(props) {
-  const { onClose, open } = props;
-  const { t, i18n } = useTranslation();
-
-  const handleClose = () => {
-    onClose(false);
-  };
-
-  const handleListItemClick = (value) => {
-    i18n.changeLanguage(value);
-    onClose(false);
-  };
-
-  return (
-    <Dialog onClose={handleClose} open={open} maxWidth="sm" fullWidth={true}>
-      <DialogTitle>{t("Drawer.Language")}</DialogTitle>
-      <List>
-        {[
-          ["zh-TW", "繁體中文"],
-          ["ja", "日本語"],
-          ["en", "English"],
-        ].map((lang, index) => (
-          <ListItem
-            button
-            onClick={() => handleListItemClick(lang[0])}
-            key={index}
-          >
-            <ListItemText primary={lang[1]} />
-          </ListItem>
-        ))}
-      </List>
-    </Dialog>
   );
 }
 
@@ -255,6 +222,7 @@ function FavList(props) {
   const { t } = useTranslation();
   const { data, onClick, open, handleDrawer } = props;
   const classes = useStyles();
+
   if (Object.keys(data).length === 0) {
     return <> </>;
   }

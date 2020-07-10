@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function RecordDialog(props) {
+export default function RecordDialog(props) {
   const classes = useStyles();
   const { onClose, open, rowData } = props;
   const { t } = useTranslation();
@@ -49,11 +49,6 @@ export function RecordDialog(props) {
   }, [rowData]);
 
   const handleClose = () => {
-    setComment(null);
-    setStatus(1);
-    setDamage(null);
-    setDamageError(null);
-    setCommentError(null);
     onClose(false);
   };
 
@@ -82,7 +77,7 @@ export function RecordDialog(props) {
 
   const handleChangeDamage = (event) => {
     let value = event.target.value;
-    if (value > 0 && value < 50000000) {
+    if (value > 0 && value < 20000000) {
       setDamage(parseInt(value));
       setDamageError(null);
     } else if (value === "") {
@@ -122,6 +117,7 @@ export function RecordDialog(props) {
                 <MenuItem value={21}>{t("Record.StatusType.21")}</MenuItem>
                 <MenuItem value={22}>{t("Record.StatusType.22")}</MenuItem>
                 <MenuItem value={23}>{t("Record.StatusType.23")}</MenuItem>
+                <MenuItem value={24}>{t("Record.StatusType.24")}</MenuItem>
                 <Divider />
                 <MenuItem value={99} disabled={!rowData}>
                   {t("Record.Delete")}

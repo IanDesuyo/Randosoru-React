@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { AuthService } from "../Services/AuthService";
+import AuthService from "../Services/AuthService";
 import toastr from "toastr";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -13,6 +13,8 @@ import Button from "@material-ui/core/Button";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import LockOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
 import MuiAlert from "@material-ui/lab/Alert";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,14 +67,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const login_status = localStorage.getItem("login_status");
-if (login_status) {
-  localStorage.removeItem("login_status");
-}
-
 export default function Login(props) {
   const { t } = useTranslation();
   const classes = useStyles();
+  const [errmsg] = useState(localStorage.getItem("login_status"));
+
+  useEffect(() => {
+    localStorage.removeItem("login_status");
+  });
 
   if (AuthService.currentUserValue) {
     return <Redirect to="/" />;
@@ -144,7 +146,7 @@ export default function Login(props) {
               Signin with Line
             </Button>
           </Box>
-          {login_status ? (
+          {errmsg ? (
             <Box mt={4}>
               <MuiAlert
                 elevation={6}
@@ -152,7 +154,7 @@ export default function Login(props) {
                 severity="error"
                 className={classes.error_msg}
               >
-                {login_status}
+                {errmsg}
               </MuiAlert>
             </Box>
           ) : (

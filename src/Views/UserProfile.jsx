@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthService } from "../Services/AuthService";
+import AuthService from "../Services/AuthService";
 import axios from "axios";
 import { withTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -73,6 +73,7 @@ class LegacyUserProfile extends React.Component {
           );
         })
         .catch((error) => {
+          AuthService.errorHandler(error);
           return this.handleError(500);
         });
     } else if (id === "me" && !AuthService.currentUserValue) {
@@ -84,6 +85,7 @@ class LegacyUserProfile extends React.Component {
           this.setState({ user: res.data, check_code: 200 });
         })
         .catch((error) => {
+          AuthService.errorHandler(error);
           return this.handleError(error.response.status);
         });
       return;

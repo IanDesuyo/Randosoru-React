@@ -41,10 +41,7 @@ function HomeLayout() {
 function AuthLayout() {
   return (
     <Switch>
-      <Route
-        exact
-        path="/login/oauth/discord"
-        component={DiscordOauthRedirect}
+      <Route exact path="/login/oauth/discord" component={DiscordOauthRedirect}
       />
       <Route exact path="/login/oauth/line" component={LineOauthRedirect} />
       <Route exact path="/login" component={Login} />
