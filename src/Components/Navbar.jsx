@@ -47,8 +47,8 @@ export default function NavBar(props) {
     setDrawer(true);
   };
 
-  const handleDrawerClose = () => {
-    setDrawer(false);
+  const handleDrawerToggle = (value) => {
+    setDrawer(value);
   };
 
   const openAnchor = (event) => {
@@ -127,7 +127,7 @@ export default function NavBar(props) {
           )}
         </Toolbar>
       </AppBar>
-      <LeftDrawer open={drawerOpen} onClose={handleDrawerClose} />
+      <LeftDrawer open={drawerOpen} onClose={handleDrawerToggle} />
     </React.Fragment>
   );
 }

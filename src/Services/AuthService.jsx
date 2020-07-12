@@ -12,7 +12,7 @@ const AuthService = {
   currentUser: UserSubject.asObservable(),
   get currentUserValue() {
     return UserSubject.value;
-  }
+  },
 };
 export default AuthService;
 
@@ -51,8 +51,13 @@ function logout() {
 }
 
 function errorHandler(error) {
+  if (!error.response) {
+    console.log(error);
+    return errorToastr("ERROR");
+  }
   console.log(error.response);
-  if (error.response.status === 401) {
+  let code = error.response.status;
+  if (code === 401) {
     if (error.response.data.detail === "Credentials expired") {
       return errorToastr(i18n.t("Alerts.LoginExpired"));
     }
@@ -61,14 +66,21 @@ function errorHandler(error) {
     }
     return errorToastr(error.response.data.detail);
   }
-  if (error.response.status === 422) {
+  if (code === 422) {
     return errorToastr(error.response.data.detail[0].msg);
   }
+  if (code === 503) {
+    return errorToastr(i18n.t("Alerts.TooFast"));
+  }
+  if (code >= 500 || code < 520) {
+    return errorToastr("Server ERROR", "ε=ε=ヾ(;ﾟдﾟ)/");
+  }
+  return errorToastr("ERROR", "Σ(っ °Д °;)っ");
 }
 
-function errorToastr(msg) {
-  toastr.error(msg, "", {
+function errorToastr(msg, title = null) {
+  toastr.error(msg, title, {
     closeButton: true,
-    positionClass: "toast-bottom-right"
+    positionClass: "toast-bottom-right",
   });
 }

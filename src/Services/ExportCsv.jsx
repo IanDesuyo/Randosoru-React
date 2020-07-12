@@ -21,13 +21,12 @@ export default function ExportCsv(columnList, initialData, filename, t) {
   csvAry.push(columns.map((column) => column.title));
   csvAry = csvAry.concat(data);
 
-  let csvContent = "data:text/csv;charset=utf-8,\ufeff";
-  csvContent += '"' + csvAry.map((row) => row.join('","')).join('"\n"') + '"';
+  let csvContent = '"' + csvAry.map((row) => row.join('","')).join('"\n"') + '"';
 
-  let uri = encodeURI(csvContent);
+  let blob = new Blob(["\ufeff", csvContent], {type: 'text/csv'});
   let link = window.document.createElement("a");
-  link.setAttribute("href", uri);
-  link.setAttribute("download", filename + ".csv");
+  link.href = URL.createObjectURL(blob);
+  link.download= filename + ".csv";
 
   window.document.body.appendChild(link);
   link.click();

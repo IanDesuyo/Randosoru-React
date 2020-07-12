@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -11,6 +11,8 @@ import HomeIcon from "@material-ui/icons/Home";
 import { Link, useHistory } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -19,10 +21,15 @@ import Collapse from "@material-ui/core/Collapse";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import ListIcon from "@material-ui/icons/List";
+import CalendarViewDayIcon from "@material-ui/icons/CalendarViewDay";
+import SaveAlt from "@material-ui/icons/SaveAlt";
 import { useEffect } from "react";
-import { FavoriteService } from "../Services/FavoriteService";
+import FavoriteService from "../Services/FavoriteService";
+import AuthService from "../Services/AuthService";
+import ExportCsv from "../Services/ExportCsv";
 import StarIcon from "@material-ui/icons/Star";
 import LangDialog from "./LangDialog";
+import Axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -51,6 +58,7 @@ export default function LeftDrawer(props) {
   const [form_id, setForm_id] = useState();
   const [favList, setFavList] = useState(null);
   const [favDrawer, setFavDrawer] = useState(false);
+  const [exportCheck, setExportCheck] = useState(false);
 
   const openLangDialog = () => {
     onClose(false);
@@ -63,6 +71,10 @@ export default function LeftDrawer(props) {
 
   const handleClose = () => {
     onClose(false);
+  };
+
+  const handleOpen = () => {
+    onClose(true);
   };
 
   const openChooseWeek = () => {
@@ -78,6 +90,15 @@ export default function LeftDrawer(props) {
 
   const handleFavDrawer = () => {
     setFavDrawer(!favDrawer);
+  };
+
+  const openExportCheck = () => {
+    onClose(false);
+    setExportCheck(true);
+  };
+
+  const handleExportCheckClose = () => {
+    setExportCheck(false);
   };
 
   useEffect(() => {
@@ -98,7 +119,7 @@ export default function LeftDrawer(props) {
 
   return (
     <React.Fragment>
-      <Drawer anchor="left" open={open} onClose={handleClose}>
+      <SwipeableDrawer anchor="left" open={open} onClose={handleClose} onOpen={handleOpen}>
         <List className={classes.list}>
           <ListItem
             button
@@ -115,9 +136,19 @@ export default function LeftDrawer(props) {
           {week ? (
             <ListItem button key="1" onClick={openChooseWeek}>
               <ListItemIcon>
-                <HomeIcon />
+                <CalendarViewDayIcon />
               </ListItemIcon>
               <ListItemText primary={t("Drawer.ChooseWeek")} />
+            </ListItem>
+          ) : (
+            <></>
+          )}
+          {week && AuthService.currentUserValue ? (
+            <ListItem button key="2" onClick={openExportCheck}>
+              <ListItemIcon>
+                <SaveAlt />
+              </ListItemIcon>
+              <ListItemText primary={t("Drawer.ExportAll")} />
             </ListItem>
           ) : (
             <></>
@@ -136,13 +167,18 @@ export default function LeftDrawer(props) {
             <ListItemText primary={t("Drawer.Language")} />
           </ListItem>
         </List>
-      </Drawer>
+      </SwipeableDrawer>
       <LangDialog open={langDialogOpen} onClose={handleLangDialogClose} />
       <ChooseWeek
         open={chooseWeekOpen}
         onClose={handleChooseWeekClose}
         week={week}
         form_id={form_id}
+      />
+      <ExportChecker
+        open={exportCheck}
+        form_id={form_id}
+        onClose={handleExportCheckClose}
       />
     </React.Fragment>
   );
@@ -257,6 +293,74 @@ function FavList(props) {
           ))}
         </List>
       </Collapse>
+    </>
+  );
+}
+
+function ExportChecker(props) {
+  const { onClose, open, form_id } = props;
+  const { t } = useTranslation();
+  const [isLoading, setLoading] = useState(false);
+
+  const handleClose = () => {
+    if (isLoading) {
+      return;
+    }
+    setLoading(false);
+    onClose(false);
+  };
+
+  const handleAgree = () => {
+    setLoading(true);
+    Axios.get("/api/forms/" + form_id + "/all", {
+      headers: { Authorization: "Bearer " + AuthService.currentUserValue },
+    })
+      .then((res) => {
+        ExportCsv(
+          [
+            { title: t("Record.Week"), field: "week" },
+            { title: t("Record.Boss"), field: "boss" },
+            { title: t("Name"), field: "user.name" },
+            { title: t("Record.Comment"), field: "comment" },
+            { title: t("Record.Damage"), field: "damage" },
+            { title: t("Record.Status"), field: "status" },
+            { title: t("Record.LastModified"), field: "last_modified" },
+          ],
+          res.data,
+          form_id,
+          t
+        );
+      })
+      .catch((error) => {
+        AuthService.errorHandler(error);
+      });
+    setTimeout(() => {
+      handleClose();
+    }, 1000);
+  };
+
+  return (
+    <>
+      <Dialog open={open} onClose={handleClose}>
+  <DialogTitle>{t("Record.ExportCheckTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{t("Record.ExportCheckDescription")}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" disabled={isLoading}>
+            {t("Disagree")}
+          </Button>
+          <Button
+            onClick={handleAgree}
+            color="primary"
+            variant="contained"
+            autoFocus
+            disabled={isLoading}
+          >
+            {t("Agree")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

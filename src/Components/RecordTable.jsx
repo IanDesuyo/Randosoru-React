@@ -7,7 +7,10 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Avatar, Typography, Grid, makeStyles } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useEffect } from "react";
 import AuthService from "../Services/AuthService";
 import RecordDialog from "./RecordDialog";
@@ -16,9 +19,11 @@ import Axios from "axios";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import StarIcon from "@material-ui/icons/Star";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
-import { FavoriteService } from "../Services/FavoriteService";
+import FavoriteService from "../Services/FavoriteService";
 import ExportCsv from "../Services/ExportCsv";
+import { MTableToolbar } from "material-table";
 
 const tableIcons = {
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
@@ -42,12 +47,27 @@ const useStyles = makeStyles((theme) => ({
     left: "auto",
     position: "fixed",
   },
+  damageBar: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
 }));
+
+const BorderLinearProgress = withStyles({
+  root: {
+    height: 10,
+    borderRadius: 5,
+  },
+  bar: {
+    borderRadius: 5,
+    backgroundColor: "#F04337",
+  },
+})(LinearProgress);
 
 export default function RecordTable(props) {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { title, month, week, boss, form_id } = props;
+  const { title, month, week, boss, form_id, bossHPData } = props;
   const [isLoading, setLoading] = useState(true);
   const [recordDialogData, setRecordDialog] = useState(null);
   const [recordDialogOpen, setRecordDialogOpen] = useState(false);
@@ -55,6 +75,8 @@ export default function RecordTable(props) {
   const [currentUser, setCurrentUser] = useState();
   const [rowData, setRowData] = useState();
   const [isFavorite, setFavorite] = useState(false);
+  const [bossHP, setBossHP] = useState(0);
+  const [totalDamage, setTotalDamage] = useState(0);
 
   const handleRecordDialogOpen = (event, rowData) => {
     if (rowData) {
@@ -91,7 +113,7 @@ export default function RecordTable(props) {
           headers: { Authorization: "Bearer " + AuthService.currentUserValue },
         }
       )
-        .then((res) => {
+        .then(() => {
           fetchData();
         })
         .catch((error) => {
@@ -110,6 +132,7 @@ export default function RecordTable(props) {
     Axios.get("/api/forms/" + form_id + "/week/" + week + "/boss/" + boss)
       .then((res) => {
         setRowData(res.data);
+        getDamage(res.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -144,15 +167,60 @@ export default function RecordTable(props) {
     }
   };
 
+  const backgroundColor = (rowData) => {
+    let color;
+    switch (rowData.status) {
+      case 11:
+        color = "#F1F7FF";
+        break;
+      case 21:
+      case 22:
+        color = "#EEE";
+        break;
+      case 23:
+        color = "#FFD9D7";
+        break;
+      case 24:
+        color = "#FFFFE0";
+        break;
+      default:
+        color = "#FFF";
+    }
+    return {
+      backgroundColor: color,
+    };
+  };
+
+  const getBossHP = () => {
+    if (!bossHPData) {
+      return;
+    }
+    if (week <= 10) {
+      return setBossHP(bossHPData[month]["1"][boss - 1]);
+    }
+    setBossHP(bossHPData[month]["3"][boss - 1]);
+  };
+
+  const getDamage = (data) => {
+    if (Object.keys(data).length === 0) {
+      return setTotalDamage(0);
+    }
+    let damage = data
+      .map((row) => row.damage)
+      .reduce((pre, curr) => pre + curr);
+    setTotalDamage(damage);
+  };
+
   useEffect(() => {
     const Authsubscribe = AuthService.currentUser.subscribe(setCurrentUser);
     fetchData();
+    getBossHP();
     checkFavorite();
     return () => {
       Authsubscribe.unsubscribe();
       setCurrentUser(null);
     };
-  }, [form_id, week]);
+  }, [form_id, week, boss, bossHPData]);
 
   return (
     <>
@@ -176,7 +244,7 @@ export default function RecordTable(props) {
             field: "user.name",
             render: (rowData) => (
               <Grid container>
-                <Avatar src={rowData.user.avatar} />
+                <Avatar src={rowData.user.avatar} alt="Avatar" />
                 {getID() === rowData.user.id ? (
                   <Typography variant="h6" className={classes.username}>
                     * You
@@ -189,7 +257,11 @@ export default function RecordTable(props) {
               </Grid>
             ),
           },
-          { title: t("Record.Comment"), field: "comment" },
+          {
+            title: t("Record.Comment"),
+            field: "comment",
+            emptyValue: t("Null"),
+          },
           {
             title: t("Record.Damage"),
             field: "damage",
@@ -240,6 +312,7 @@ export default function RecordTable(props) {
               t
             );
           },
+          rowStyle: backgroundColor,
         }}
         onRowClick={handleRecordDialogOpen}
         localization={{
@@ -250,6 +323,27 @@ export default function RecordTable(props) {
             exportTitle: t("Record.Export"),
             exportName: t("Record.ExportCSV"),
           },
+        }}
+        components={{
+          Toolbar: (props) => (
+            <>
+              <MTableToolbar {...props} />
+              <div className={classes.damageBar}>
+                <BorderLinearProgress
+                  variant="determinate"
+                  value={((bossHP - totalDamage) / bossHP) * 100}
+                />
+                <p>
+                  {totalDamage}
+                  {" / "}
+                  {bossHP}
+                  {" - "}
+                  {parseInt(((bossHP - totalDamage) / bossHP) * 100)}
+                  {"%"}
+                </p>
+              </div>
+            </>
+          ),
         }}
         actions={[
           {

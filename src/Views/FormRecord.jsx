@@ -30,6 +30,7 @@ export default function BossTabs() {
   const [title, setTitle] = useState("Loading...");
   const [status, setStatus] = useState(0);
   const [month, setMonth] = useState();
+  const [bossHPData, setBossHPData] = useState();
 
   const fetchFormData = () => {
     if (id.length !== 32) {
@@ -44,6 +45,17 @@ export default function BossTabs() {
       .then((res) => {
         setTitle(res.data.title);
         setMonth(res.data.month);
+        fetchBossHPData();
+      })
+      .catch((error) => {
+        setStatus(error.response.status);
+      });
+  };
+
+  const fetchBossHPData = () => {
+    Axios.get("/static/boss.json")
+      .then((res) => {
+        setBossHPData(res.data);
         setStatus(200);
       })
       .catch((error) => {
@@ -77,19 +89,14 @@ export default function BossTabs() {
             <Tab label="五王" />
           </Tabs>
         </AppBar>
-        {[0, 1, 2, 3, 4].map((index) => (
-          <div role="tabpanel" hidden={value !== index} key={index}>
-            {value === index && (
-              <RecordTable
-                boss={index + 1}
-                month={month}
-                title={title}
-                week={week}
-                form_id={id}
-              />
-            )}
-          </div>
-        ))}
+        <RecordTable
+          boss={value + 1}
+          month={month}
+          title={title}
+          week={week}
+          form_id={id}
+          bossHPData={bossHPData}
+        />
       </div>
     );
   } else {

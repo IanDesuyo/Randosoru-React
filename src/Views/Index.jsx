@@ -19,9 +19,11 @@ export default function Index() {
         setData("Load Failed...");
       });
   };
+  
   useEffect(() => {
     fetchNews();
-  });
+  }, []);
+
   return (
     <>
       <Backdrop open={!data}>

@@ -20,7 +20,8 @@
     "CurrentWeek": "當前周次",
     "Language": "選擇語言",
     "Favorites": "我的最愛",
-    "LastWeek": "最後檢視周次"
+    "LastWeek": "最後檢視周次",
+    "ExportAll": "全部輸出"
   },
   "Alerts": {
     "NotLogin": "尚未登入!",
@@ -31,7 +32,8 @@
     "Error": "發生錯誤",
     "FormNotFound": "找不到此報名表",
     "FormBadID": "報名表格式錯誤",
-    "FormBadWeek": "周次格式錯誤"
+    "FormBadWeek": "周次格式錯誤",
+    "TooFast": "你跟桐人一樣快? 慢一點啦..."
   },
   "Record": {
     "TitleFormat": "第{{week}}周 - {{title}}",
@@ -43,6 +45,8 @@
     "Comment": "備註",
     "Damage": "傷害",
     "Status": "狀態",
+    "Week": "周次",
+    "Boss": "王",
     "LastModified": "最後編輯",
     "Null": "未回報",
     "StatusType": {
@@ -65,6 +69,8 @@
     "NoRecord": "尚未有人報名",
     "Export": "輸出",
     "ExportCSV": "輸出成CSV",
+    "ExportCheckTitle": "確定要全部輸出成CSV嗎?",
+    "ExportCheckDescription": "此動作每分鐘只能執行一次!",
     "Favorite": "我的最愛"
   },
   "Cancel": "取消",
@@ -72,5 +78,7 @@
   "Edit": "修改",
   "Choose": "選擇",
   "Null": "無",
-  "ERROR": "錯誤"
+  "ERROR": "錯誤",
+  "Agree": "同意",
+  "Disagree": "取消"
 }
