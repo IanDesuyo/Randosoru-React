@@ -18,7 +18,7 @@ export default AuthService;
 
 function login_discord() {
   let win = window.open(
-    "https://discordapp.com/api/oauth2/authorize?client_id=609318305718730790&redirect_uri=https://guild.randosoru.me/login/oauth/discord&response_type=code&scope=identify&prompt=none",
+    "https://discordapp.com/api/oauth2/authorize?client_id=731919330714845315&redirect_uri=https://guild.randosoru.me/login/oauth/discord&response_type=code&scope=identify&prompt=none",
     "window",
     "toolbar=no, menubar=no, resizable=no height=600 width=400"
   );
