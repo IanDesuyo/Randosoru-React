@@ -48,9 +48,7 @@ export default function RecordDetails(props) {
               </Avatar>
             }
             title={t("Record.Status")}
-            value={
-              rowData ? t("Record.StatusType." + rowData.status) : t("ERROR")
-            }
+            value={rowData ? t("Record.StatusType." + rowData.status) : t("ERROR")}
           />
           <DetailItem
             icon={
@@ -59,9 +57,7 @@ export default function RecordDetails(props) {
               </Avatar>
             }
             title={t("Record.Damage")}
-            value={
-              rowData && rowData.damage !== null ? rowData.damage : t("Null")
-            }
+            value={rowData && rowData.damage !== null ? rowData.damage : t("Null")}
           />
           <DetailItem
             icon={
@@ -70,9 +66,7 @@ export default function RecordDetails(props) {
               </Avatar>
             }
             title={t("Record.Comment")}
-            value={
-              rowData && rowData.comment !== "" ? rowData.comment : t("Null")
-            }
+            value={rowData && rowData.comment !== "" ? rowData.comment : t("Null")}
           />
           <DetailItem
             icon={
@@ -81,11 +75,7 @@ export default function RecordDetails(props) {
               </Avatar>
             }
             title={t("Record.LastModified")}
-            value={
-              rowData
-                ? new Date(rowData.last_modified * 1000).toLocaleString()
-                : t("Null")
-            }
+            value={rowData ? new Date(rowData.last_modified * 1000).toLocaleString() : t("Null")}
           />
         </List>
       </DialogContent>

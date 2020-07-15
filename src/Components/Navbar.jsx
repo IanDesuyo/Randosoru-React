@@ -15,7 +15,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { makeStyles } from "@material-ui/core/styles";
 import LeftDrawer from "./LeftDrawer";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
@@ -47,11 +47,11 @@ export default function NavBar(props) {
     setDrawer(true);
   };
 
-  const handleDrawerToggle = (value) => {
+  const handleDrawerToggle = value => {
     setDrawer(value);
   };
 
-  const openAnchor = (event) => {
+  const openAnchor = event => {
     setAnchor(event.currentTarget);
   };
 
@@ -110,11 +110,7 @@ export default function NavBar(props) {
                 open={!!anchorOpen}
                 onClose={handleAnchorClose}
               >
-                <MenuItem
-                  component={Link}
-                  to="/users/me"
-                  onClick={handleAnchorClose}
-                >
+                <MenuItem component={Link} to="/users/me" onClick={handleAnchorClose}>
                   {t("Profile")}
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>{t("Logout")}</MenuItem>

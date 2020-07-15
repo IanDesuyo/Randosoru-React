@@ -15,7 +15,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useEffect } from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   avatar_box: {
     display: "flex",
     flexDirection: "column",
@@ -50,11 +50,11 @@ export default function UserProfile() {
           }
         : null
     )
-      .then((res) => {
+      .then(res => {
         setData(res.data);
         setStatus(200);
       })
-      .catch((error) => {
+      .catch(error => {
         AuthService.errorHandler(error);
         setStatus(error.response.status);
       });
@@ -91,9 +91,7 @@ export default function UserProfile() {
           <Typography gutterBottom variant="body1">
             {t("JoinedGuild")}
             {": "}
-            {data.guild
-              ? data.guild.name
-              : t("Guild_Null")}
+            {data.guild ? data.guild.name : t("Guild_Null")}
           </Typography>
         </Grid>
         <Grid>

@@ -7,8 +7,7 @@ import "./i18n";
 import * as Sentry from "@sentry/react";
 
 Sentry.init({
-  dsn:
-    "https://b84a55197122419ba2a9bcc4b2555fed@o419070.ingest.sentry.io/5327465",
+  dsn: "https://b84a55197122419ba2a9bcc4b2555fed@o419070.ingest.sentry.io/5327465",
 });
 
 ReactDOM.render(

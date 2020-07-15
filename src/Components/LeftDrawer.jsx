@@ -31,7 +31,7 @@ import StarIcon from "@material-ui/icons/Star";
 import LangDialog from "./LangDialog";
 import Axios from "axios";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   list: {
     width: 250,
   },
@@ -121,13 +121,7 @@ export default function LeftDrawer(props) {
     <React.Fragment>
       <SwipeableDrawer anchor="left" open={open} onClose={handleClose} onOpen={handleOpen}>
         <List className={classes.list}>
-          <ListItem
-            button
-            key="0"
-            component={Link}
-            to="/"
-            onClick={handleClose}
-          >
+          <ListItem button key="0" component={Link} to="/" onClick={handleClose}>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
@@ -175,11 +169,7 @@ export default function LeftDrawer(props) {
         week={week}
         form_id={form_id}
       />
-      <ExportChecker
-        open={exportCheck}
-        form_id={form_id}
-        onClose={handleExportCheckClose}
-      />
+      <ExportChecker open={exportCheck} form_id={form_id} onClose={handleExportCheckClose} />
     </React.Fragment>
   );
 }
@@ -315,7 +305,7 @@ function ExportChecker(props) {
     Axios.get("/api/forms/" + form_id + "/all", {
       headers: { Authorization: "Bearer " + AuthService.currentUserValue },
     })
-      .then((res) => {
+      .then(res => {
         ExportCsv(
           [
             { title: t("Record.Week"), field: "week" },
@@ -331,7 +321,7 @@ function ExportChecker(props) {
           t
         );
       })
-      .catch((error) => {
+      .catch(error => {
         AuthService.errorHandler(error);
       });
     setTimeout(() => {
@@ -342,7 +332,7 @@ function ExportChecker(props) {
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
-  <DialogTitle>{t("Record.ExportCheckTitle")}</DialogTitle>
+        <DialogTitle>{t("Record.ExportCheckTitle")}</DialogTitle>
         <DialogContent>
           <DialogContentText>{t("Record.ExportCheckDescription")}</DialogContentText>
         </DialogContent>

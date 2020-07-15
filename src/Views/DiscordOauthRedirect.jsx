@@ -17,11 +17,11 @@ export default function Discord() {
     if (querys.get("code")) {
       axios
         .post("/api/oauth/discord?code=" + querys.get("code"))
-        .then((res) => {
+        .then(res => {
           localStorage.setItem("token", res.data.token);
           window.close();
         })
-        .catch((error) => {
+        .catch(error => {
           localStorage.setItem("login_status", error.response.data.detail);
           setError(error.response.data.detail);
           localStorage.removeItem("token");
@@ -42,11 +42,7 @@ export default function Discord() {
       {!error ? <LinearProgress /> : <></>}
       <Container>
         <Box mt={3}>
-          <MuiAlert
-            elevation={6}
-            variant="filled"
-            severity={!error ? "info" : "error"}
-          >
+          <MuiAlert elevation={6} variant="filled" severity={!error ? "info" : "error"}>
             {error || "Redirecting..."}
           </MuiAlert>
         </Box>

@@ -15,7 +15,7 @@ import Box from "@material-ui/core/Box";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useTranslation } from "react-i18next";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -42,23 +42,23 @@ export default function BossTabs() {
       return;
     }
     Axios.get("/api/forms/" + id)
-      .then((res) => {
+      .then(res => {
         setTitle(res.data.title);
         setMonth(res.data.month);
         fetchBossHPData();
       })
-      .catch((error) => {
+      .catch(error => {
         setStatus(error.response.status);
       });
   };
 
   const fetchBossHPData = () => {
     Axios.get("/static/boss.json")
-      .then((res) => {
+      .then(res => {
         setBossHPData(res.data);
         setStatus(200);
       })
-      .catch((error) => {
+      .catch(error => {
         setStatus(error.response.status);
       });
   };

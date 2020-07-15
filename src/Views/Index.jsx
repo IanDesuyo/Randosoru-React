@@ -12,14 +12,14 @@ export default function Index() {
 
   const fetchNews = () => {
     Axios.get("https://api.github.com/gists/cace6fa03a51d17758dd171278461eb1")
-      .then((res) => {
+      .then(res => {
         setData(res.data.files["Randosoru Guild Index"].content);
       })
-      .catch((error) => {
+      .catch(error => {
         setData("Load Failed...");
       });
   };
-  
+
   useEffect(() => {
     fetchNews();
   }, []);

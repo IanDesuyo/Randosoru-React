@@ -30,7 +30,7 @@ const tableIcons = {
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   username: {
     marginLeft: theme.spacing(1),
     display: "flex",
@@ -98,7 +98,7 @@ export default function RecordTable(props) {
     }, 200);
   };
 
-  const handleRecordDialogClose = (value) => {
+  const handleRecordDialogClose = value => {
     if (!value) {
       setRecordDialogOpen(false);
       setTimeout(() => {
@@ -116,7 +116,7 @@ export default function RecordTable(props) {
         .then(() => {
           fetchData();
         })
-        .catch((error) => {
+        .catch(error => {
           AuthService.errorHandler(error);
           setLoading(false);
         });
@@ -130,12 +130,12 @@ export default function RecordTable(props) {
   const fetchData = () => {
     setLoading(true);
     Axios.get("/api/forms/" + form_id + "/week/" + week + "/boss/" + boss)
-      .then((res) => {
+      .then(res => {
         setRowData(res.data);
         getDamage(res.data);
         setLoading(false);
       })
-      .catch((error) => {
+      .catch(error => {
         AuthService.errorHandler(error);
         setLoading(false);
       });
@@ -167,7 +167,7 @@ export default function RecordTable(props) {
     }
   };
 
-  const backgroundColor = (rowData) => {
+  const backgroundColor = rowData => {
     let color;
     switch (rowData.status) {
       case 11:
@@ -201,13 +201,11 @@ export default function RecordTable(props) {
     setBossHP(bossHPData[month]["3"][boss - 1]);
   };
 
-  const getDamage = (data) => {
+  const getDamage = data => {
     if (Object.keys(data).length === 0) {
       return setTotalDamage(0);
     }
-    let damage = data
-      .map((row) => row.damage)
-      .reduce((pre, curr) => pre + curr);
+    let damage = data.map(row => row.damage).reduce((pre, curr) => pre + curr);
     setTotalDamage(damage);
   };
 
@@ -242,7 +240,7 @@ export default function RecordTable(props) {
           {
             title: t("Name"),
             field: "user.name",
-            render: (rowData) => (
+            render: rowData => (
               <Grid container>
                 <Avatar src={rowData.user.avatar} alt="Avatar" />
                 {getID() === rowData.user.id ? (
@@ -290,9 +288,7 @@ export default function RecordTable(props) {
             field: "last_modified",
             type: "datetime",
             hidden: document.body.clientWidth <= 1000,
-            render: (rowData) => (
-              <p>{new Date(rowData.last_modified * 1000).toLocaleString()}</p>
-            ),
+            render: rowData => <p>{new Date(rowData.last_modified * 1000).toLocaleString()}</p>,
           },
         ]}
         data={rowData}
@@ -325,7 +321,7 @@ export default function RecordTable(props) {
           },
         }}
         components={{
-          Toolbar: (props) => (
+          Toolbar: props => (
             <>
               <MTableToolbar {...props} />
               <div className={classes.damageBar}>
@@ -360,11 +356,7 @@ export default function RecordTable(props) {
         <CircularProgress color="inherit" />
       </Backdrop>
       {currentUser ? (
-        <Fab
-          color="primary"
-          className={classes.fab}
-          onClick={handleRecordDialogOpen}
-        >
+        <Fab color="primary" className={classes.fab} onClick={handleRecordDialogOpen}>
           <AddIcon />
         </Fab>
       ) : (

@@ -17,7 +17,7 @@ import Input from "@material-ui/core/Input";
 import Divider from "@material-ui/core/Divider";
 import { useEffect } from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   container: {
     display: "flex",
     flexWrap: "wrap",
@@ -61,7 +61,7 @@ export default function RecordDialog(props) {
     });
   };
 
-  const handleChangeComment = (event) => {
+  const handleChangeComment = event => {
     let value = event.target.value;
     if (value.length > 40) {
       setCommentError(t("Record.Error.Comment"));
@@ -71,11 +71,11 @@ export default function RecordDialog(props) {
     }
   };
 
-  const handleChangeStatus = (event) => {
+  const handleChangeStatus = event => {
     setStatus(event.target.value);
   };
 
-  const handleChangeDamage = (event) => {
+  const handleChangeDamage = event => {
     let value = event.target.value;
     if (value > 0 && value < 20000000) {
       setDamage(parseInt(value));
@@ -90,9 +90,7 @@ export default function RecordDialog(props) {
 
   return (
     <Dialog onClose={handleClose} open={open} maxWidth="sm" fullWidth={true}>
-      <DialogTitle>
-        {rowData ? t("Record.EditRecord") : t("Record.AddRecord")}
-      </DialogTitle>
+      <DialogTitle>{rowData ? t("Record.EditRecord") : t("Record.AddRecord")}</DialogTitle>
       <DialogContent>
         <Grid container className={classes.container}>
           <Grid item>
@@ -153,9 +151,7 @@ export default function RecordDialog(props) {
               <TextField
                 label={t("Record.LastModified")}
                 defaultValue={
-                  rowData
-                    ? new Date(rowData.last_modified * 1000).toLocaleString()
-                    : t("Null")
+                  rowData ? new Date(rowData.last_modified * 1000).toLocaleString() : t("Null")
                 }
                 disabled
               />

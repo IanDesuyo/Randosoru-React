@@ -41,8 +41,7 @@ function HomeLayout() {
 function AuthLayout() {
   return (
     <Switch>
-      <Route exact path="/login/oauth/discord" component={DiscordOauthRedirect}
-      />
+      <Route exact path="/login/oauth/discord" component={DiscordOauthRedirect} />
       <Route exact path="/login/oauth/line" component={LineOauthRedirect} />
       <Route exact path="/login" component={Login} />
     </Switch>
@@ -72,11 +71,7 @@ function FormLayout() {
       <Suspense fallback={<Fragment />}>
         <Switch>
           <Route exact path="/forms/:id/week/:week" component={FormRecord} />
-          <Redirect
-            exact
-            from="/form/:id/week/:week"
-            to="/forms/:id/week/:week"
-          />
+          <Redirect exact from="/form/:id/week/:week" to="/forms/:id/week/:week" />
           <Redirect exact from="/forms/:id" to="/forms/:id/week/1" />
         </Switch>
       </Suspense>
