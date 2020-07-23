@@ -18,7 +18,7 @@
     "react": "^16.13.1",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.13.1",
-    "react-i18next": "^11.5.1",
+    "react-i18next": "^11.7.0",
     "react-markdown": "^4.3.1",
     "react-router-dom": "^5.2.0",
     "react-router-ga": "^1.2.3",
