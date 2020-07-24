@@ -195,10 +195,14 @@ export default function RecordTable(props) {
     if (!bossHPData) {
       return;
     }
-    if (week <= 10) {
+    if (week <= 3) {
       return setBossHP(bossHPData[month]["1"][boss - 1]);
+    } else if (week <= 10) {
+      return setBossHP(bossHPData[month]["2"][boss - 1]);
+    } else if (week <= 34) {
+      return setBossHP(bossHPData[month]["3"][boss - 1]);
     }
-    setBossHP(bossHPData[month]["3"][boss - 1]);
+    setBossHP(bossHPData[month]["4"][boss - 1]);
   };
 
   const getDamage = data => {
