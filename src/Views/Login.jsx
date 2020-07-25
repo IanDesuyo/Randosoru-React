@@ -125,7 +125,6 @@ export default function Login(props) {
                   positionClass: "toast-bottom-right",
                 });
               }}
-              disabled
             >
               <SvgIcon viewBox="0 0 448 512" className={classes.btn_icon} fontSize="large">
                 <path

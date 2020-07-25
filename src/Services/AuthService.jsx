@@ -13,6 +13,9 @@ const AuthService = {
   get currentUserValue() {
     return UserSubject.value;
   },
+  next(token) {
+    UserSubject.next(token)
+  },
 };
 export default AuthService;
 
@@ -31,17 +34,7 @@ function login_discord() {
 }
 
 function login_line() {
-  let win = window.open(
-    "https://access.line.me/dialog/oauth/weblogin?response_type=code&client_id=1654370605&redirect_uri=https://guild.randosoru.me/login/oauth/line&state=123",
-    "window",
-    "toolbar=no, menubar=no, resizable=no height=600 width=400"
-  );
-
-  let checkConnect = setInterval(function () {
-    if (!win || !win.closed) return;
-    clearInterval(checkConnect);
-    window.location.reload();
-  }, 100);
+  window.liff.login();
 }
 
 function logout() {
@@ -58,6 +51,9 @@ function errorHandler(error) {
   console.log(error.response);
   let code = error.response.status;
   if (code === 401) {
+    localStorage.removeItem("me");
+    localStorage.removeItem("login_status");
+    localStorage.removeItem("token");
     if (error.response.data.detail === "Credentials expired") {
       return errorToastr(i18n.t("Alerts.LoginExpired"));
     }

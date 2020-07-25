@@ -1,7 +1,9 @@
-import React, { Fragment, Suspense, lazy } from "react";
+import React, { Fragment, Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Analytics from "react-router-ga";
+import SeverLogin from "./Services/LiffService";
+import AuthService from "./Services/AuthService";
 
 const Index = lazy(() => import("./Views/Index"));
 const Login = lazy(() => import("./Views/Login"));
@@ -11,6 +13,26 @@ const UserProfile = lazy(() => import("./Views/UserProfile"));
 const FormRecord = lazy(() => import("./Views/FormRecord"));
 
 function App() {
+
+  const [liffState, setLiffState] = useState(false) ;
+  const { liff } = window ;
+
+  useEffect(() => {
+    (async () => {
+      setLiffState(true);
+      await liff.init({liffId : "1654464491-42ME7MYm"});
+      setLiffState(false);
+
+      if (AuthService.currentUserValue !== null) return ;
+
+      if (liff.isInClient() || liff.isLoggedIn()) {
+        SeverLogin(liff.getAccessToken()) ;
+      }
+    })();
+  }, []);
+
+  if (liffState) return <></> ;
+
   return (
     <BrowserRouter>
       <Analytics id="UA-170804064-1">
