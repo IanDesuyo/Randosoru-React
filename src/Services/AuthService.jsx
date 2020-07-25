@@ -40,6 +40,7 @@ function login_line() {
 function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("me");
+  window.liff.logout();
   UserSubject.next(null);
 }
 
