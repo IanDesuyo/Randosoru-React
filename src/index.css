@@ -7,5 +7,5 @@ body {
 }
 
 * {
-  font-family: "Noto Sans TC" !important;
+  font-family: "Noto Sans TC", "Noto Sans JP", "Noto Sans SC" !important;
 }

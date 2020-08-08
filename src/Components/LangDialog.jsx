@@ -25,6 +25,7 @@ export default function LangDialog(props) {
       <List>
         {[
           ["zh-TW", "繁體中文"],
+          ["zh-CN", "简体中文"],
           ["ja", "日本語"],
           ["en", "English"],
         ].map((lang, index) => (

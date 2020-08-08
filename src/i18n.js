@@ -12,7 +12,7 @@ i18n
       loadPath: "/static/locales/{{lng}}/{{ns}}.json",
     },
     fallbackLng: "zh-TW",
-    supportedLngs: ["zh-TW", "ja", "en"],
+    supportedLngs: ["zh-TW", "zh-CN", "ja", "en"],
     debug: false,
     detection: {
       order: ["querystring", "localStorage"],
