@@ -21,7 +21,8 @@
     "Language": "Choose Language",
     "Favorites": "My Favorites",
     "LastWeek": "Last viewed week",
-    "ExportAll": "Export All"
+    "ExportAll": "Export All",
+    "FormConfig": "Form Configure"
   },
   "Alerts": {
     "NotLogin": "Not signed in",

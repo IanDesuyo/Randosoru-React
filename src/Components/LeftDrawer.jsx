@@ -22,6 +22,7 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import ListIcon from "@material-ui/icons/List";
 import CalendarViewDayIcon from "@material-ui/icons/CalendarViewDay";
+import BuildIcon from '@material-ui/icons/Build';
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import { useEffect } from "react";
 import FavoriteService from "../Services/FavoriteService";
@@ -30,6 +31,7 @@ import ExportCsv from "../Services/ExportCsv";
 import StarIcon from "@material-ui/icons/Star";
 import LangDialog from "./LangDialog";
 import Axios from "axios";
+import FormConfigDialog from "./FormConfigDialog";
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -59,6 +61,7 @@ export default function LeftDrawer(props) {
   const [favList, setFavList] = useState(null);
   const [favDrawer, setFavDrawer] = useState(false);
   const [exportCheck, setExportCheck] = useState(false);
+  const [formConfigOpen, setFormConfigOpen] = useState(false);
 
   const openLangDialog = () => {
     onClose(false);
@@ -127,8 +130,14 @@ export default function LeftDrawer(props) {
             </ListItemIcon>
             <ListItemText primary={t("Drawer.Home")} />
           </ListItem>
+          <ListItem button key="1" onClick={() => setFormConfigOpen(true)}>
+            <ListItemIcon>
+              <BuildIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("Drawer.FormConfig")} />
+          </ListItem>
           {week ? (
-            <ListItem button key="1" onClick={openChooseWeek}>
+            <ListItem button key="2" onClick={openChooseWeek}>
               <ListItemIcon>
                 <CalendarViewDayIcon />
               </ListItemIcon>
@@ -138,7 +147,7 @@ export default function LeftDrawer(props) {
             <></>
           )}
           {week && AuthService.currentUserValue ? (
-            <ListItem button key="2" onClick={openExportCheck}>
+            <ListItem button key="3" onClick={openExportCheck}>
               <ListItemIcon>
                 <SaveAlt />
               </ListItemIcon>
@@ -170,6 +179,7 @@ export default function LeftDrawer(props) {
         form_id={form_id}
       />
       <ExportChecker open={exportCheck} form_id={form_id} onClose={handleExportCheckClose} />
+      <FormConfigDialog open={formConfigOpen} onClose={() => setFormConfigOpen(false)} />
     </React.Fragment>
   );
 }

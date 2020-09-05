@@ -21,7 +21,8 @@
     "Language": "選擇語言",
     "Favorites": "我的最愛",
     "LastWeek": "最後檢視周次",
-    "ExportAll": "全部輸出"
+    "ExportAll": "全部輸出",
+    "FormConfig": "報名表設定"
   },
   "Alerts": {
     "NotLogin": "尚未登入!",
