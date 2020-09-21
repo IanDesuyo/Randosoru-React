@@ -54,14 +54,13 @@ export default function BossTabs() {
   };
 
   const fetchBossHPData = () => {
-    Axios.get("/static/boss.json")
-      .then(res => {
-        setBossHPData(res.data);
-        setStatus(200);
-      })
-      .catch(error => {
-        setStatus(error.response.status);
-      });
+    setBossHPData({
+      "1": [6000000, 8000000, 10000000, 12000000, 15000000],
+      "2": [6000000, 8000000, 10000000, 12000000, 15000000],
+      "3": [7000000, 9000000, 13000000, 15000000, 20000000],
+      "4": [15000000, 16000000, 18000000, 19000000, 20000000],
+    });
+    setStatus(200);
   };
 
   useEffect(() => {
