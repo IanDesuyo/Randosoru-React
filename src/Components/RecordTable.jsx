@@ -210,6 +210,9 @@ export default function RecordTable(props) {
       return setTotalDamage(0);
     }
     let damage = data.map(row => row.damage).reduce((pre, curr) => pre + curr);
+    if (!damage) {
+      damage = 0;
+    }
     setTotalDamage(damage);
   };
 
