@@ -37,7 +37,8 @@ export default function BossTabs() {
       setStatus(4001);
       return;
     }
-    if (isNaN(parseInt(week))) {
+    let weekValue = parseInt(week);
+    if (isNaN(weekValue) || weekValue < 1 || weekValue > 200) {
       setStatus(4002);
       return;
     }

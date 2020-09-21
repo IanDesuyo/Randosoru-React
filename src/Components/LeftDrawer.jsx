@@ -191,7 +191,7 @@ function ChooseWeek(props) {
       if (week_in === null || isNaN(week_in)) {
         return;
       }
-      if (week_in < 1 || week_in > 100) {
+      if (week_in < 1 || week_in > 200) {
         week_in = null;
       }
     }
@@ -216,7 +216,7 @@ function ChooseWeek(props) {
           <Button
             component={Link}
             to={"/forms/" + form_id + "/week/" + (week - 1)}
-            disabled={week <= 1 || week > 100}
+            disabled={week <= 1 || week > 200}
             onClick={handleClose}
           >
             {"<"}
@@ -225,18 +225,18 @@ function ChooseWeek(props) {
           <Button
             component={Link}
             to={"/forms/" + form_id + "/week/" + (week + 1)}
-            disabled={week < 1 || week >= 100}
+            disabled={week < 1 || week >= 200}
             onClick={handleClose}
           >
             {">"}
           </Button>
           <Button
             component={Link}
-            to={"/forms/" + form_id + "/week/" + 100}
-            disabled={week >= 100}
+            to={"/forms/" + form_id + "/week/" + 200}
+            disabled={week >= 200}
             onClick={handleClose}
           >
-            100
+            200
           </Button>
         </ButtonGroup>
       </DialogContent>

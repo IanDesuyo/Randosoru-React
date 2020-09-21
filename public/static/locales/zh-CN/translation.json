@@ -16,7 +16,7 @@
   "Drawer": {
     "Home": "首页",
     "ChooseWeek": "选择周次",
-    "ChooseWeekPrompt": "请输入周次 (1~100)",
+    "ChooseWeekPrompt": "请输入周次 (1~200)",
     "CurrentWeek": "当前周次",
     "Language": "选择语言",
     "Favorites": "我的最爱",

@@ -16,7 +16,7 @@
   "Drawer": {
     "Home": "Home",
     "ChooseWeek": "Choose Week",
-    "ChooseWeekPrompt": "Please enter the number (1~100)",
+    "ChooseWeekPrompt": "Please enter the number (1~200)",
     "CurrentWeek": "Current Week",
     "Language": "Choose Language",
     "Favorites": "My Favorites",
