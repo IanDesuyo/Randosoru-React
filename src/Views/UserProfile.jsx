@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import AuthService from "../Services/AuthService";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -13,10 +12,10 @@ import Divider from "@material-ui/core/Divider";
 import { Grid } from "@material-ui/core";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { useEffect } from "react";
+import { useAuth } from "../Services/Auth";
 
 const useStyles = makeStyles(theme => ({
-  avatar_box: {
+  avatarBox: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -28,43 +27,49 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function UserProfile() {
-  const { t } = useTranslation();
-  let { id } = useParams();
+  const { id } = useParams();
   const classes = useStyles();
-  const [status, setStatus] = useState(0);
-  const [data, setData] = useState(null);
+  const { t } = useTranslation();
+  const { token, setMe } = useAuth();
+  const [status, setStatus] = useState();
+  const [data, setData] = useState();
 
-  const getUser = () => {
+  const fetchUser = () => {
     if (id !== "me" && (id.length < 6 || id.length > 10)) {
       return setStatus(400);
-    } else if (id === "me" && !AuthService.currentUserValue) {
-      return setStatus(4011);
+    } else if (id === "me" && !token) {
+      return setStatus(401);
     }
+
     Axios.get(
       "/api/profile/users/" + id,
-      id === "me"
+      token
         ? {
             headers: {
-              Authorization: "Bearer " + AuthService.currentUserValue,
+              Authorization: "Bearer " + token,
             },
           }
         : null
     )
       .then(res => {
+        if (id === "me") {
+          setMe({ ...res.data, cache: new Date() * 1000 });
+        }
         setData(res.data);
         setStatus(200);
+        document.title = res.data.name + " - " + t("Title");
       })
       .catch(error => {
-        AuthService.errorHandler(error);
         setStatus(error.response.status);
       });
   };
 
   useEffect(() => {
-    getUser();
+    fetchUser();
+    document.title = t("Profile") + " - " + t("Title");
   }, [id]);
 
-  if (status === 0) {
+  if (!status) {
     return (
       <Backdrop open={true}>
         <CircularProgress color="inherit" />
@@ -73,7 +78,7 @@ export default function UserProfile() {
   } else if (status === 200) {
     return (
       <Container>
-        <Box mt={3} className={classes.avatar_box}>
+        <Box mt={3} className={classes.avatarBox}>
           <Avatar src={data.avatar} className={classes.avatar} />
           <Typography component="h1" gutterBottom variant="h5">
             {data.name}
@@ -82,50 +87,49 @@ export default function UserProfile() {
         <Divider />
         <Grid>
           <Typography gutterBottom variant="body1">
-            {t("UID")}
-            {": "}
-            {data.uid ? data.uid : t("UID_Null")}
+            {"ID: " + data.id}
           </Typography>
         </Grid>
         <Grid>
           <Typography gutterBottom variant="body1">
-            {t("JoinedGuild")}
-            {": "}
-            {data.guild ? data.guild.name : t("Guild_Null")}
+            {t("UID") + ": " + (data.uid || t("UID_Null"))}
           </Typography>
         </Grid>
         <Grid>
           <Typography gutterBottom variant="body1">
-            {t("CreatedAt")}
-            {": "}
-            {new Date(data.created_at * 1000).toLocaleString()}
+            {t("JoinedGuild") + ": " + (data.guild ? data.guild.name : t("Guild_Null"))}
+          </Typography>
+        </Grid>
+        <Grid>
+          <Typography gutterBottom variant="body1">
+            {t("CreatedAt") + ": " + new Date(data.created_at * 1000).toLocaleString()}
           </Typography>
         </Grid>
       </Container>
     );
   }
-  let errorMsg;
+  let error;
   switch (status) {
     case 400:
-      errorMsg = t("Alerts.UserNotFound");
+      error = t("Alerts.UserNotFound");
       break;
-    case 4011:
-      errorMsg = t("Alerts.NotLogin");
+    case 401:
+      error = t("Alerts.NotLogin");
       break;
     case 403:
-      errorMsg = t("Alerts.ProfileNoPerms");
+      error = t("Alerts.ProfileNoPerms");
       break;
     case 404:
-      errorMsg = t("Alerts.UserNotFound");
+      error = t("Alerts.UserNotFound");
       break;
     default:
-      errorMsg = t("Alerts.Error");
+      error = t("Alerts.Error");
   }
   return (
     <Container>
       <Box mt={3}>
         <MuiAlert elevation={6} variant="filled" severity="error">
-          {errorMsg}
+          {error}
         </MuiAlert>
       </Box>
     </Container>

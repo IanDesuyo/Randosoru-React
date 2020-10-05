@@ -5,6 +5,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
 
 export default function LangDialog(props) {
   const { onClose, open } = props;
@@ -21,19 +22,21 @@ export default function LangDialog(props) {
 
   return (
     <Dialog onClose={handleClose} open={open} maxWidth="sm" fullWidth={true}>
-      <DialogTitle>{t("Drawer.Language")}</DialogTitle>
-      <List>
-        {[
-          ["zh-TW", "繁體中文"],
-          ["zh-CN", "简体中文"],
-          ["ja", "日本語"],
-          ["en", "English"],
-        ].map((lang, index) => (
-          <ListItem button onClick={() => handleListItemClick(lang[0])} key={index}>
-            <ListItemText primary={lang[1]} />
-          </ListItem>
-        ))}
-      </List>
+      <DialogTitle>{t("Language")}</DialogTitle>
+      <DialogContent>
+        <List>
+          {[
+            ["zh-TW", "繁體中文"],
+            ["zh-CN", "简体中文"],
+            ["ja", "日本語"],
+            ["en", "English"],
+          ].map((lang, index) => (
+            <ListItem button onClick={() => handleListItemClick(lang[0])} key={index}>
+              <ListItemText primary={lang[1]} />
+            </ListItem>
+          ))}
+        </List>
+      </DialogContent>
     </Dialog>
   );
 }

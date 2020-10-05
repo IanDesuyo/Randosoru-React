@@ -1,18 +1,14 @@
-import React from "react";
+import React, { useEffect, useState, forwardRef, useMemo } from "react";
 import MaterialTable from "material-table";
-import { forwardRef } from "react";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { useEffect } from "react";
-import AuthService from "../Services/AuthService";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import RecordDialog from "./RecordDialog";
 import RecordDetails from "./RecordDetails";
 import Axios from "axios";
@@ -21,9 +17,11 @@ import AddIcon from "@material-ui/icons/Add";
 import StarIcon from "@material-ui/icons/Star";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
-import FavoriteService from "../Services/FavoriteService";
 import ExportCsv from "../Services/ExportCsv";
 import { MTableToolbar } from "material-table";
+import { useAuth } from "../Services/Auth";
+import { useFav } from "../Services/Favorite";
+import toaster from "toastr";
 
 const tableIcons = {
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
@@ -47,6 +45,13 @@ const useStyles = makeStyles(theme => ({
     left: "auto",
     position: "fixed",
   },
+  bossImgBox: {
+    paddingTop: theme.spacing(2),
+  },
+  bossImg: {
+    width: theme.spacing(12),
+    height: theme.spacing(12),
+  },
   damageBar: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -65,23 +70,34 @@ const BorderLinearProgress = withStyles({
 })(LinearProgress);
 
 export default function RecordTable(props) {
+  const { formDetail, week, boss, socket } = props;
   const { t } = useTranslation();
   const classes = useStyles();
-  const { title, month, week, boss, form_id, bossHPData } = props;
+  const theme = useTheme();
+  const { token } = useAuth();
+  const { isFav, setFav, removeFav, setCurrentForm } = useFav();
   const [isLoading, setLoading] = useState(true);
   const [recordDialogData, setRecordDialog] = useState(null);
   const [recordDialogOpen, setRecordDialogOpen] = useState(false);
   const [recordDetailsOpen, setRecordDetailsOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState();
   const [rowData, setRowData] = useState();
-  const [isFavorite, setFavorite] = useState(false);
-  const [bossHP, setBossHP] = useState(0);
+  const [bossHp, setBossHp] = useState(0);
   const [totalDamage, setTotalDamage] = useState(0);
+  const [hpPercent, setHpPercent] = useState(100);
+
+  const userID = useMemo(() => {
+    try {
+      let user = JSON.parse(atob(token.split(".")[1]));
+      return user.id;
+    } catch (e) {
+      return null;
+    }
+  }, [token]);
 
   const handleRecordDialogOpen = (event, rowData) => {
     if (rowData) {
       setRecordDialog(rowData);
-      if (getID() === rowData.user.id) {
+      if (userID === rowData.user.id) {
         setRecordDialogOpen(true);
       } else {
         setRecordDetailsOpen(true);
@@ -107,17 +123,17 @@ export default function RecordTable(props) {
     } else {
       setLoading(true);
       Axios.post(
-        "/api/forms/" + form_id + "/week/" + week + "/boss/" + boss,
-        { ...value, month: month },
+        `/api/forms/${formDetail.id}/week/${week}/boss/${boss}`,
+        { ...value, month: formDetail.month },
         {
-          headers: { Authorization: "Bearer " + AuthService.currentUserValue },
+          headers: { Authorization: `Bearer ${token}` },
         }
       )
         .then(() => {
-          fetchData();
+          setLoading(false);
         })
         .catch(error => {
-          AuthService.errorHandler(error);
+          console.log(error);
           setLoading(false);
         });
       setRecordDialogOpen(false);
@@ -129,80 +145,41 @@ export default function RecordTable(props) {
 
   const fetchData = () => {
     setLoading(true);
-    Axios.get("/api/forms/" + form_id + "/week/" + week + "/boss/" + boss)
+    Axios.get(`/api/forms/${formDetail.id}/week/${week}/boss/${boss}`)
       .then(res => {
         setRowData(res.data);
         getDamage(res.data);
         setLoading(false);
       })
       .catch(error => {
-        AuthService.errorHandler(error);
+        console.log(error);
         setLoading(false);
       });
   };
 
-  const checkFavorite = () => {
-    if (FavoriteService.check(form_id)) {
-      setFavorite(true);
-      FavoriteService.set(form_id, week, title);
-    }
-  };
-
-  const handleFavorite = () => {
-    if (isFavorite) {
-      FavoriteService.remove(form_id);
-      setFavorite(false);
-    } else {
-      FavoriteService.set(form_id, week, title);
-      setFavorite(true);
-    }
-  };
-
-  const getID = () => {
-    try {
-      let user = JSON.parse(atob(currentUser.split(".")[1]));
-      return user.id;
-    } catch (e) {
-      return null;
-    }
-  };
-
   const backgroundColor = rowData => {
+    let dark = theme.palette.type === "dark" ? true : false;
     let color;
     switch (rowData.status) {
       case 11:
-        color = "#F1F7FF";
+        color = dark ? "#002047" : "#7cb6ff";
         break;
       case 21:
       case 22:
-        color = "#EEE";
+        color = dark ? "#33422c" : "#99e699";
         break;
       case 23:
-        color = "#FFD9D7";
+        color = dark ? "#ff473f" : "#FFD9D7";
         break;
       case 24:
-        color = "#FFFFE0";
+        color = dark ? "#d9b100" : "#ffe066";
         break;
       default:
-        color = "#FFF";
+        color = dark ? "#424242" : "#FFF";
     }
     return {
       backgroundColor: color,
     };
-  };
-
-  const getBossHP = () => {
-    if (!bossHPData) {
-      return;
-    }
-    if (week <= 3) {
-      return setBossHP(bossHPData["1"][boss - 1]);
-    } else if (week <= 10) {
-      return setBossHP(bossHPData["2"][boss - 1]);
-    } else if (week <= 34) {
-      return setBossHP(bossHPData["3"][boss - 1]);
-    }
-    setBossHP(bossHPData["4"][boss - 1]);
   };
 
   const getDamage = data => {
@@ -214,25 +191,85 @@ export default function RecordTable(props) {
       damage = 0;
     }
     setTotalDamage(damage);
+
+    let stage = 1;
+    if (week >= 35) {
+      stage(4);
+    } else if (week >= 11) {
+      stage(3);
+    } else if (week >= 4) {
+      stage(2);
+    }
+
+    let tempBossHp = formDetail.boss[boss - 1].hp[stage];
+    setHpPercent(((tempBossHp - damage) / tempBossHp) * 100);
+    setBossHp(tempBossHp);
+  };
+
+  const FormTracker = data => {
+    switch (data.type) {
+      case "RecUP":
+        if (data.data.week === parseInt(week) && data.data.boss === parseInt(boss)) {
+          if (data.data.status === 99) {
+            setRowData(prev => prev.filter(row => row.id !== data.data.id));
+          } else {
+            setRowData(prev => [...prev.filter(row => row.id !== data.data.id), data.data]);
+          }
+          toaster.success(
+            `${data.data.user.name}更新了${data.data.week}周${data.data.boss}王的記錄\n狀態: ${data.data.status}`,
+            t("Socket.RecUP"),
+            {
+              closeButton: true,
+              positionClass: "toast-bottom-center",
+            }
+          );
+        }
+        break;
+      case "RecNEW":
+        if (data.data.week === parseInt(week) && data.data.boss === parseInt(boss)) {
+          setRowData(prev => [...prev, data.data]);
+        }
+        toaster.success(
+          `${data.data.user.name}新增一筆${data.data.week}周${data.data.boss}王的記錄\n狀態: ${data.data.status}`,
+          t("Socket.RecNEW"),
+          {
+            closeButton: true,
+            positionClass: "toast-bottom-center",
+          }
+        );
+        break;
+      case "System":
+        toaster.warning(data.message, t("Socket.System"), {
+          closeButton: true,
+          positionClass: "toast-bottom-center",
+        });
+        break;
+      default:
+        return;
+    }
   };
 
   useEffect(() => {
-    const Authsubscribe = AuthService.currentUser.subscribe(setCurrentUser);
+    setCurrentForm({ id: formDetail.id, week: parseInt(week), title: formDetail.title });
+    if (isFav(formDetail.id)) {
+      setFav(formDetail.title, formDetail.id, parseInt(week));
+    }
     fetchData();
-    getBossHP();
-    checkFavorite();
+    if (socket) {
+      socket.on("FormTracker", FormTracker);
+    }
     return () => {
-      Authsubscribe.unsubscribe();
-      setCurrentUser(null);
+      setCurrentForm(null);
+      socket.removeAllListeners("FormTracker");
     };
-  }, [form_id, week, boss, bossHPData]);
+  }, [formDetail, week, boss, socket]);
 
   return (
     <>
       <MaterialTable
         icons={tableIcons}
         title={t("Record.TitleFormat", {
-          title: title,
+          title: formDetail.boss[boss - 1].name,
           week: week,
         })}
         columns={[
@@ -250,7 +287,7 @@ export default function RecordTable(props) {
             render: rowData => (
               <Grid container>
                 <Avatar src={rowData.user.avatar} alt="Avatar" />
-                {getID() === rowData.user.id ? (
+                {userID === rowData.user.id ? (
                   <Typography variant="h6" className={classes.username}>
                     * You
                   </Typography>
@@ -301,7 +338,7 @@ export default function RecordTable(props) {
         data={rowData}
         options={{
           search: false,
-          exportButton: true,
+          exportButton: { csv: true },
           exportAllData: true,
           paging: false,
           exportCsv: (columnList, initialData) => {
@@ -309,7 +346,7 @@ export default function RecordTable(props) {
               columnList,
               initialData,
               t("Record.TitleFormat", {
-                title: title,
+                title: formDetail.title,
                 week: week,
               }),
               t
@@ -324,37 +361,48 @@ export default function RecordTable(props) {
           },
           toolbar: {
             exportTitle: t("Record.Export"),
-            exportName: t("Record.ExportCSV"),
+            exportCSVName: t("Record.ExportCSV"),
           },
         }}
         components={{
           Toolbar: props => (
-            <>
-              <MTableToolbar {...props} />
-              <div className={classes.damageBar}>
-                <BorderLinearProgress
-                  variant="determinate"
-                  value={((bossHP - totalDamage) / bossHP) * 100}
+            <Grid container justify="center">
+              <Grid
+                item
+                md={1}
+                sm={2}
+                xl={1}
+                xs={false}
+                align="center"
+                className={classes.bossImgBox}
+              >
+                <Avatar
+                  src={formDetail.boss[boss - 1].image}
+                  variant="rounded"
+                  className={classes.bossImg}
                 />
-                <p>
-                  {totalDamage}
-                  {" / "}
-                  {bossHP}
-                  {" - "}
-                  {parseInt(((bossHP - totalDamage) / bossHP) * 100)}
-                  {"%"}
-                </p>
-              </div>
-            </>
+              </Grid>
+              <Grid item md={11} sm={10} xl={11} xs={12}>
+                <MTableToolbar {...props} />
+                <div className={classes.damageBar}>
+                  <BorderLinearProgress variant="determinate" value={hpPercent} />
+                  <p>{`${totalDamage} / ${bossHp} - ${Math.round(hpPercent)}%`}</p>
+                </div>
+              </Grid>
+            </Grid>
           ),
         }}
         actions={[
           {
             icon: () => {
-              return isFavorite ? <StarIcon /> : <StarBorderIcon />;
+              return isFav(formDetail.id) ? <StarIcon /> : <StarBorderIcon />;
             },
             tooltip: t("Record.Favorite"),
-            onClick: handleFavorite,
+            onClick: () => {
+              isFav(formDetail.id)
+                ? removeFav(formDetail.title, formDetail.id)
+                : setFav(formDetail.title, formDetail.id, parseInt(week));
+            },
             isFreeAction: true,
           },
         ]}
@@ -362,7 +410,7 @@ export default function RecordTable(props) {
       <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      {currentUser ? (
+      {token ? (
         <Fab color="primary" className={classes.fab} onClick={handleRecordDialogOpen}>
           <AddIcon />
         </Fab>

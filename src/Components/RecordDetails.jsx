@@ -12,6 +12,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import CommentIcon from "@material-ui/icons/Comment";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
+import UpdateIcon from "@material-ui/icons/Update";
+import RssFeedIcon from "@material-ui/icons/RssFeed";
 
 const useStyles = makeStyles({
   damage: {
@@ -35,47 +37,34 @@ export default function RecordDetails(props) {
         <List>
           <ListItem>
             <ListItemAvatar>
-              <Avatar>
-                <Avatar src={rowData ? rowData.user.avatar : null} />
-              </Avatar>
+              <Avatar src={rowData ? rowData.user.avatar : null} />
             </ListItemAvatar>
             <ListItemText primary={rowData ? rowData.user.name : null} />
           </ListItem>
           <DetailItem
-            icon={
-              <Avatar>
-                <CommentIcon />
-              </Avatar>
-            }
+            icon={<RssFeedIcon />}
             title={t("Record.Status")}
             value={rowData ? t("Record.StatusType." + rowData.status) : t("ERROR")}
           />
           <DetailItem
-            icon={
-              <Avatar className={classes.damage}>
-                <FavoriteIcon />
-              </Avatar>
-            }
+            icon={<FavoriteIcon />}
             title={t("Record.Damage")}
             value={rowData && rowData.damage !== null ? rowData.damage : t("Null")}
           />
           <DetailItem
-            icon={
-              <Avatar>
-                <CommentIcon />
-              </Avatar>
-            }
+            icon={<CommentIcon />}
             title={t("Record.Comment")}
             value={rowData && rowData.comment !== "" ? rowData.comment : t("Null")}
           />
           <DetailItem
-            icon={
-              <Avatar>
-                <AccessTimeIcon />
-              </Avatar>
-            }
+            icon={<UpdateIcon />}
             title={t("Record.LastModified")}
             value={rowData ? new Date(rowData.last_modified * 1000).toLocaleString() : t("Null")}
+          />
+          <DetailItem
+            icon={<AccessTimeIcon />}
+            title={t("Record.CreatedAt")}
+            value={rowData ? new Date(rowData.created_at * 1000).toLocaleString() : t("Null")}
           />
         </List>
       </DialogContent>

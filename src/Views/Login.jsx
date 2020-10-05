@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import AuthService from "../Services/AuthService";
 import toastr from "toastr";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -13,12 +12,13 @@ import Button from "@material-ui/core/Button";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import LockOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
 import MuiAlert from "@material-ui/lab/Alert";
-import { useState } from "react";
 import { useEffect } from "react";
+import { useAuth, loginDiscord, loginLine } from "../Services/Auth";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: "100vh",
+    height: "100%",
+    position: "fixed",
   },
   image: {
     backgroundImage: "url(/static/images/randosoru.png)",
@@ -34,11 +34,11 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "center",
   },
-  login_icon: {
+  loginIcon: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
-  discord_btn: {
+  discordBtn: {
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(4),
     backgroundColor: "#7289DA",
@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     },
     color: "#FFFFFF",
   },
-  line_btn: {
+  lineBtn: {
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(8),
     backgroundColor: "#00B900",
@@ -56,26 +56,29 @@ const useStyles = makeStyles(theme => ({
     },
     color: "#FFFFFF",
   },
-  btn_icon: {
+  btnIcon: {
     paddingRight: theme.spacing(2),
   },
-  error_msg: {
+  errorMsg: {
     paddingLeft: theme.spacing(5),
     paddingRight: theme.spacing(5),
   },
 }));
 
-export default function Login(props) {
+export default function Login() {
   const { t } = useTranslation();
   const classes = useStyles();
-  const [errmsg] = useState(localStorage.getItem("login_status"));
+  const { token } = useAuth();
+  const [error] = useState(localStorage.getItem("loginStatus"));
 
   useEffect(() => {
-    localStorage.removeItem("login_status");
+    document.title = t("Login") + " - " + t("Title");
+    localStorage.removeItem("loginStatus");
   });
 
-  if (AuthService.currentUserValue) {
-    return <Redirect to="/" />;
+  if (token) {
+    let next = new URLSearchParams(window.location.search).get("next");
+    return <Redirect to={next || "/"} />;
   }
 
   return (
@@ -83,7 +86,7 @@ export default function Login(props) {
       <Grid item xs={false} sm={4} md={8} className={classes.image} />
       <Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
         <div className={classes.paper}>
-          <Avatar className={classes.login_icon}>
+          <Avatar className={classes.loginIcon}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -92,16 +95,16 @@ export default function Login(props) {
           <Box mt={3}>
             <Button
               variant="contained"
-              className={classes.discord_btn}
+              className={classes.discordBtn}
               onClick={() => {
-                AuthService.login_discord();
+                loginDiscord();
                 toastr.info(t("Redirecting"), "", {
                   closeButton: true,
                   positionClass: "toast-bottom-right",
                 });
               }}
             >
-              <SvgIcon viewBox="0 0 245 240" className={classes.btn_icon} fontSize="large">
+              <SvgIcon viewBox="0 0 245 240" className={classes.btnIcon} fontSize="large">
                 <path
                   className="st0"
                   d="M104.4 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1.1-6.1-4.5-11.1-10.2-11.1zM140.9 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1s-4.5-11.1-10.2-11.1z"
@@ -117,16 +120,16 @@ export default function Login(props) {
           <Box mt={2}>
             <Button
               variant="contained"
-              className={classes.line_btn}
+              className={classes.lineBtn}
               onClick={() => {
-                AuthService.login_line();
+                loginLine();
                 toastr.info(t("Redirecting"), "", {
                   closeButton: true,
                   positionClass: "toast-bottom-right",
                 });
               }}
             >
-              <SvgIcon viewBox="0 0 448 512" className={classes.btn_icon} fontSize="large">
+              <SvgIcon viewBox="0 0 448 512" className={classes.btnIcon} fontSize="large">
                 <path
                   fill="currentColor"
                   d="M272.1 204.2v71.1c0 1.8-1.4 3.2-3.2 3.2h-11.4c-1.1 0-2.1-.6-2.6-1.3l-32.6-44v42.2c0 1.8-1.4 3.2-3.2 3.2h-11.4c-1.8 0-3.2-1.4-3.2-3.2v-71.1c0-1.8 1.4-3.2 3.2-3.2H219c1 0 2.1.5 2.6 1.4l32.6 44v-42.2c0-1.8 1.4-3.2 3.2-3.2h11.4c1.8-.1 3.3 1.4 3.3 3.1zm-82-3.2h-11.4c-1.8 0-3.2 1.4-3.2 3.2v71.1c0 1.8 1.4 3.2 3.2 3.2h11.4c1.8 0 3.2-1.4 3.2-3.2v-71.1c0-1.7-1.4-3.2-3.2-3.2zm-27.5 59.6h-31.1v-56.4c0-1.8-1.4-3.2-3.2-3.2h-11.4c-1.8 0-3.2 1.4-3.2 3.2v71.1c0 .9.3 1.6.9 2.2.6.5 1.3.9 2.2.9h45.7c1.8 0 3.2-1.4 3.2-3.2v-11.4c0-1.7-1.4-3.2-3.1-3.2zM332.1 201h-45.7c-1.7 0-3.2 1.4-3.2 3.2v71.1c0 1.7 1.4 3.2 3.2 3.2h45.7c1.8 0 3.2-1.4 3.2-3.2v-11.4c0-1.8-1.4-3.2-3.2-3.2H301v-12h31.1c1.8 0 3.2-1.4 3.2-3.2V234c0-1.8-1.4-3.2-3.2-3.2H301v-12h31.1c1.8 0 3.2-1.4 3.2-3.2v-11.4c-.1-1.7-1.5-3.2-3.2-3.2zM448 113.7V399c-.1 44.8-36.8 81.1-81.7 81H81c-44.8-.1-81.1-36.9-81-81.7V113c.1-44.8 36.9-81.1 81.7-81H367c44.8.1 81.1 36.8 81 81.7zm-61.6 122.6c0-73-73.2-132.4-163.1-132.4-89.9 0-163.1 59.4-163.1 132.4 0 65.4 58 120.2 136.4 130.6 19.1 4.1 16.9 11.1 12.6 36.8-.7 4.1-3.3 16.1 14.1 8.8 17.4-7.3 93.9-55.3 128.2-94.7 23.6-26 34.9-52.3 34.9-81.5z"
@@ -135,15 +138,15 @@ export default function Login(props) {
               Signin with Line
             </Button>
           </Box>
-          {errmsg ? (
+          {error ? (
             <Box mt={4}>
               <MuiAlert
                 elevation={6}
                 variant="filled"
                 severity="error"
-                className={classes.error_msg}
+                className={classes.errorMsg}
               >
-                {errmsg}
+                {error}
               </MuiAlert>
             </Box>
           ) : (

@@ -11,8 +11,6 @@ import HomeIcon from "@material-ui/icons/Home";
 import { Link, useHistory } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -22,263 +20,224 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import ListIcon from "@material-ui/icons/List";
 import CalendarViewDayIcon from "@material-ui/icons/CalendarViewDay";
+import Brightness4Icon from "@material-ui/icons/Brightness4";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import GitHubIcon from "@material-ui/icons/GitHub";
 import SaveAlt from "@material-ui/icons/SaveAlt";
-import { useEffect } from "react";
-import FavoriteService from "../Services/FavoriteService";
-import AuthService from "../Services/AuthService";
-import ExportCsv from "../Services/ExportCsv";
 import StarIcon from "@material-ui/icons/Star";
+import Typography from "@material-ui/core/Typography";
+import { version as app_version } from "../../package.json";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import { useAuth } from "../Services/Auth";
+import toastr from "toastr";
 import LangDialog from "./LangDialog";
-import Axios from "axios";
+import { useFav } from "../Services/Favorite";
+import ExportDialog from "./ExportDialog";
 
 const useStyles = makeStyles(theme => ({
   list: {
     width: 250,
   },
-  chooseWeekBtn: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
   nested: {
     paddingLeft: theme.spacing(4),
+  },
+  bottom: {
+    width: 250,
+    position: "fixed",
+    bottom: 0,
+    paddingBottom: 20,
+  },
+  appDetails: {
+    paddingTop: 10,
+    paddingLeft: 10,
   },
 }));
 
 export default function LeftDrawer(props) {
-  const { onClose, open } = props;
+  const { onToggle, open, darkMode, setDarkMode } = props;
   const { t } = useTranslation();
   const classes = useStyles();
-  const [langDialogOpen, setLangDialog] = useState(false);
+  const { token, setToken } = useAuth();
+  const { currentForm } = useFav();
+  const [langDialogOpen, setLangDialogOpen] = useState(false);
+  const [favDrawerOpen, setFavDrawerOpen] = useState(false);
   const [chooseWeekOpen, setChooseWeekOpen] = useState(false);
-  const [week, setWeek] = useState();
-  const [form_id, setForm_id] = useState();
-  const [favList, setFavList] = useState(null);
-  const [favDrawer, setFavDrawer] = useState(false);
-  const [exportCheck, setExportCheck] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
-  const openLangDialog = () => {
-    onClose(false);
-    setLangDialog(true);
+  const handleOpen = () => {
+    onToggle();
+  };
+  const handleClose = () => {
+    onToggle();
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+  const handleLogout = () => {
+    setToken("");
+    toastr.success(t("HasLogout"), "", {
+      closeButton: true,
+      positionClass: "toast-bottom-right",
+    });
+  };
+
+  const handleLangDialogOpen = () => {
+    setLangDialogOpen(true);
   };
 
   const handleLangDialogClose = () => {
-    setLangDialog(false);
+    setLangDialogOpen(false);
   };
 
-  const handleClose = () => {
-    onClose(false);
-  };
-
-  const handleOpen = () => {
-    onClose(true);
+  const handleFavDrawer = () => {
+    setFavDrawerOpen(!favDrawerOpen);
   };
 
   const openChooseWeek = () => {
-    onClose(false);
+    onToggle();
     setChooseWeekOpen(true);
   };
 
   const handleChooseWeekClose = () => {
-    setWeek(null);
-    setForm_id(null);
     setChooseWeekOpen(false);
   };
 
-  const handleFavDrawer = () => {
-    setFavDrawer(!favDrawer);
+  const handleExportDialogOpen = () => {
+    onToggle();
+    setExportDialogOpen(true);
   };
 
-  const openExportCheck = () => {
-    onClose(false);
-    setExportCheck(true);
+  const handleExportDialogClose = () => {
+    setExportDialogOpen(false);
   };
-
-  const handleExportCheckClose = () => {
-    setExportCheck(false);
-  };
-
-  useEffect(() => {
-    let url = window.location.pathname.split("/");
-    if (url[1] === "forms" && url[3] === "week") {
-      setForm_id(url[2]);
-      setWeek(parseInt(url[4]));
-    } else {
-      setWeek(null);
-      setForm_id(null);
-    }
-    const Favsubscribe = FavoriteService.favData.subscribe(setFavList);
-    return () => {
-      Favsubscribe.unsubscribe();
-      setFavList(null);
-    };
-  }, [week]);
 
   return (
     <React.Fragment>
       <SwipeableDrawer anchor="left" open={open} onClose={handleClose} onOpen={handleOpen}>
         <List className={classes.list}>
-          <ListItem button key="0" component={Link} to="/" onClick={handleClose}>
+          {token ? (
+            <ListItem button key="0" component={Link} to="/users/me" onClick={handleClose}>
+              <ListItemIcon>
+                <AccountCircle />
+              </ListItemIcon>
+              <ListItemText primary={t("Profile")} />
+            </ListItem>
+          ) : (
+            <ListItem
+              button
+              key="0"
+              component={Link}
+              to={`/login?next=${window.location.pathname}`}
+              onClick={handleClose}
+            >
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary={t("Login")} />
+            </ListItem>
+          )}
+          <ListItem button key="1" component={Link} to="/" onClick={handleClose}>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
-            <ListItemText primary={t("Drawer.Home")} />
+            <ListItemText primary={t("Home")} />
           </ListItem>
-          {week ? (
-            <ListItem button key="1" onClick={openChooseWeek}>
+          {currentForm ? (
+            <ListItem button key="2" onClick={openChooseWeek}>
               <ListItemIcon>
                 <CalendarViewDayIcon />
               </ListItemIcon>
-              <ListItemText primary={t("Drawer.ChooseWeek")} />
+              <ListItemText primary={t("ChooseWeek")} />
             </ListItem>
           ) : (
             <></>
           )}
-          {week && AuthService.currentUserValue ? (
-            <ListItem button key="2" onClick={openExportCheck}>
+          {currentForm && token ? (
+            <ListItem button key="3" onClick={handleExportDialogOpen}>
               <ListItemIcon>
                 <SaveAlt />
               </ListItemIcon>
-              <ListItemText primary={t("Drawer.ExportAll")} />
+              <ListItemText primary={t("ExportAll")} />
             </ListItem>
           ) : (
             <></>
           )}
           <Divider />
-          <FavList
-            data={favList}
-            onClick={handleClose}
-            open={favDrawer}
-            handleDrawer={handleFavDrawer}
-          />
-          <ListItem button key="99" onClick={openLangDialog}>
-            <ListItemIcon>
-              <LanguageIcon />
-            </ListItemIcon>
-            <ListItemText primary={t("Drawer.Language")} />
-          </ListItem>
+          <FavList onClick={handleClose} open={favDrawerOpen} handleDrawer={handleFavDrawer} />
+          <div className={classes.bottom}>
+            <ListItem button key="97" onClick={handleLangDialogOpen}>
+              <ListItemIcon>
+                <LanguageIcon />
+              </ListItemIcon>
+              <ListItemText primary={t("Language")} />
+            </ListItem>
+            <ListItem button key="98" onClick={toggleDarkMode}>
+              <ListItemIcon>
+                <Brightness4Icon />
+              </ListItemIcon>
+              <ListItemText primary={"Toggle Dark Mode"} />
+            </ListItem>
+            {token ? (
+              <ListItem button key="99" onClick={handleLogout}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary={t("Logout")} />
+              </ListItem>
+            ) : (
+              <></>
+            )}
+            <Divider />
+            <Typography className={classes.appDetails} variant="subtitle2">
+              Version:{app_version}
+              <br />
+              <GitHubIcon fontSize="small" /> Randosoru-React
+            </Typography>
+          </div>
         </List>
       </SwipeableDrawer>
       <LangDialog open={langDialogOpen} onClose={handleLangDialogClose} />
-      <ChooseWeek
-        open={chooseWeekOpen}
-        onClose={handleChooseWeekClose}
-        week={week}
-        form_id={form_id}
-      />
-      <ExportChecker open={exportCheck} form_id={form_id} onClose={handleExportCheckClose} />
+      <ChooseWeek open={chooseWeekOpen} onClose={handleChooseWeekClose} />
+      <ExportDialog open={exportDialogOpen} onClose={handleExportDialogClose} />
     </React.Fragment>
-  );
-}
-
-function ChooseWeek(props) {
-  const { onClose, open, form_id, week } = props;
-  const classes = useStyles();
-  const { t } = useTranslation();
-  let history = useHistory();
-
-  const handleClose = () => {
-    onClose(false);
-  };
-
-  const manualChoose = () => {
-    let week_in;
-    while (typeof week_in !== "number") {
-      week_in = parseInt(prompt(t("Drawer.ChooseWeekPrompt")));
-      if (week_in === null || isNaN(week_in)) {
-        return;
-      }
-      if (week_in < 1 || week_in > 200) {
-        week_in = null;
-      }
-    }
-    history.push("/forms/" + form_id + "/week/" + week_in);
-    onClose(false);
-  };
-
-  return (
-    <Dialog onClose={handleClose} open={open} maxWidth="sm">
-      <DialogTitle>{t("Drawer.ChooseWeek")}</DialogTitle>
-      <DialogContent className={classes.chooseWeekBtn}>
-        {t("Drawer.CurrentWeek")}: {week}
-        <ButtonGroup color="primary">
-          <Button
-            component={Link}
-            to={"/forms/" + form_id + "/week/" + 1}
-            disabled={week <= 1}
-            onClick={handleClose}
-          >
-            1
-          </Button>
-          <Button
-            component={Link}
-            to={"/forms/" + form_id + "/week/" + (week - 1)}
-            disabled={week <= 1 || week > 200}
-            onClick={handleClose}
-          >
-            {"<"}
-          </Button>
-          <Button onClick={manualChoose}>{t("Choose")}</Button>
-          <Button
-            component={Link}
-            to={"/forms/" + form_id + "/week/" + (week + 1)}
-            disabled={week < 1 || week >= 200}
-            onClick={handleClose}
-          >
-            {">"}
-          </Button>
-          <Button
-            component={Link}
-            to={"/forms/" + form_id + "/week/" + 200}
-            disabled={week >= 200}
-            onClick={handleClose}
-          >
-            200
-          </Button>
-        </ButtonGroup>
-      </DialogContent>
-    </Dialog>
   );
 }
 
 function FavList(props) {
   const { t } = useTranslation();
-  const { data, onClick, open, handleDrawer } = props;
+  const { onClick, open, handleDrawer } = props;
   const classes = useStyles();
+  const { fav } = useFav();
 
-  if (Object.keys(data).length === 0) {
+  if (fav.length === 0) {
     return <> </>;
   }
+
   return (
     <>
       <ListItem button onClick={handleDrawer}>
         <ListItemIcon>
           <StarIcon />
         </ListItemIcon>
-        <ListItemText primary={t("Drawer.Favorites")} />
+        <ListItemText primary={t("Favorites")} />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {Object.keys(data).map((key, index) => (
+          {fav.map((value, index) => (
             <ListItem
               button
-              key={key}
+              key={index}
               component={Link}
-              to={"/forms/" + key + "/week/" + data[key].week}
+              to={"/forms/" + value.id + "/week/" + value.week}
               onClick={onClick}
               className={classes.nested}
             >
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
-              <ListItemText
-                primary={data[key].title}
-                secondary={t("Drawer.LastWeek") + ": " + data[key].week}
-              />
+              <ListItemText primary={value.title} secondary={t("LastWeek") + ": " + value.week} />
             </ListItem>
           ))}
         </List>
@@ -287,70 +246,78 @@ function FavList(props) {
   );
 }
 
-function ExportChecker(props) {
-  const { onClose, open, form_id } = props;
+function ChooseWeek(props) {
+  const { onClose, open } = props;
   const { t } = useTranslation();
-  const [isLoading, setLoading] = useState(false);
+  const classes = useStyles();
+  let history = useHistory();
+  const { currentForm } = useFav();
 
   const handleClose = () => {
-    if (isLoading) {
-      return;
-    }
-    setLoading(false);
     onClose(false);
   };
 
-  const handleAgree = () => {
-    setLoading(true);
-    Axios.get("/api/forms/" + form_id + "/all", {
-      headers: { Authorization: "Bearer " + AuthService.currentUserValue },
-    })
-      .then(res => {
-        ExportCsv(
-          [
-            { title: t("Record.Week"), field: "week" },
-            { title: t("Record.Boss"), field: "boss" },
-            { title: t("Name"), field: "user.name" },
-            { title: t("Record.Comment"), field: "comment" },
-            { title: t("Record.Damage"), field: "damage" },
-            { title: t("Record.Status"), field: "status" },
-            { title: t("Record.LastModified"), field: "last_modified" },
-          ],
-          res.data,
-          form_id,
-          t
-        );
-      })
-      .catch(error => {
-        AuthService.errorHandler(error);
-      });
-    setTimeout(() => {
-      handleClose();
-    }, 1000);
+  const manualChoose = () => {
+    let week_in;
+    while (typeof week_in !== "number") {
+      week_in = parseInt(prompt(t("ChooseWeekPrompt")));
+      if (week_in === null || isNaN(week_in)) {
+        return;
+      }
+      if (week_in < 1 || week_in > 200) {
+        week_in = null;
+      }
+    }
+    history.push("/forms/" + currentForm.id + "/week/" + week_in);
+    onClose(false);
   };
 
+  if (!currentForm) {
+    return <></>;
+  }
   return (
-    <>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{t("Record.ExportCheckTitle")}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{t("Record.ExportCheckDescription")}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary" disabled={isLoading}>
-            {t("Disagree")}
+    <Dialog onClose={handleClose} open={open} maxWidth="sm">
+      <DialogTitle>{t("ChooseWeek")}</DialogTitle>
+      <Typography align="center">
+        {t("CurrentWeek")}: {currentForm.week}
+      </Typography>
+      <DialogContent className={classes.chooseWeekBtn}>
+        <ButtonGroup>
+          <Button
+            component={Link}
+            to={"/forms/" + currentForm.id + "/week/" + 1}
+            disabled={currentForm.week <= 1}
+            onClick={handleClose}
+          >
+            1
           </Button>
           <Button
-            onClick={handleAgree}
-            color="primary"
-            variant="contained"
-            autoFocus
-            disabled={isLoading}
+            component={Link}
+            to={"/forms/" + currentForm.id + "/week/" + (currentForm.week - 1)}
+            disabled={currentForm.week <= 1 || currentForm.week > 200}
+            onClick={handleClose}
           >
-            {t("Agree")}
+            {"<"}
           </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+          <Button onClick={manualChoose}>{t("Other")}</Button>
+          <Button
+            component={Link}
+            to={"/forms/" + currentForm.id + "/week/" + (currentForm.week + 1)}
+            disabled={currentForm.week < 1 || currentForm.week >= 200}
+            onClick={handleClose}
+          >
+            {">"}
+          </Button>
+          <Button
+            component={Link}
+            to={"/forms/" + currentForm.id + "/week/" + 200}
+            disabled={currentForm.week >= 200}
+            onClick={handleClose}
+          >
+            200
+          </Button>
+        </ButtonGroup>
+      </DialogContent>
+    </Dialog>
   );
 }

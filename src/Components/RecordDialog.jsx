@@ -33,9 +33,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function RecordDialog(props) {
-  const classes = useStyles();
   const { onClose, open, rowData } = props;
   const { t } = useTranslation();
+  const classes = useStyles();
   const [comment, setComment] = useState(null);
   const [status, setStatus] = useState(1);
   const [damage, setDamage] = useState(null);
@@ -157,18 +157,22 @@ export default function RecordDialog(props) {
               />
             </FormControl>
           </Grid>
+          <Grid item xs={11}>
+            <FormControl className={classes.formControl} fullWidth>
+              <TextField
+                label={t("Record.CreatedAt")}
+                defaultValue={
+                  rowData ? new Date(rowData.created_at * 1000).toLocaleString() : t("Null")
+                }
+                disabled
+              />
+            </FormControl>
+          </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          {t("Cancel")}
-        </Button>
-        <Button
-          onClick={handleSave}
-          color="primary"
-          variant="contained"
-          disabled={!!commentError || !!damageError}
-        >
+        <Button onClick={handleClose}>{t("Cancel")}</Button>
+        <Button onClick={handleSave} variant="contained" disabled={!!commentError || !!damageError}>
           {rowData ? t("Edit") : t("Add")}
         </Button>
       </DialogActions>

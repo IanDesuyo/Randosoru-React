@@ -1,0 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Noto+Sans+SC&family=Noto+Sans+TC&display=swap");
+
+* {
+  font-family: "Noto Sans TC", "Noto Sans JP", "Noto Sans SC" !important;
+}

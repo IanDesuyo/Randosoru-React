@@ -4,25 +4,21 @@
   "Logout": "Logout",
   "Profile": "Profile",
   "Redirecting": "Redirecting...",
-  "Notices": {
-    "HasLogout": "Logged Out Successfully"
-  },
+  "HasLogout": "Logged Out Successfully",
   "Name": "Name",
   "UID": "In-game ID",
   "UID_Null": "Unbound",
   "JoinedGuild": "Guild",
   "Guild_Null": "Not joined",
   "CreatedAt": "Created at",
-  "Drawer": {
-    "Home": "Home",
-    "ChooseWeek": "Choose Week",
-    "ChooseWeekPrompt": "Please enter the number (1~200)",
-    "CurrentWeek": "Current Week",
-    "Language": "Choose Language",
-    "Favorites": "My Favorites",
-    "LastWeek": "Last viewed week",
-    "ExportAll": "Export All"
-  },
+  "Home": "Home",
+  "ChooseWeek": "Choose Week",
+  "ChooseWeekPrompt": "Please enter the number (1~200)",
+  "CurrentWeek": "Current Week",
+  "Language": "Choose Language",
+  "Favorites": "My Favorites",
+  "LastWeek": "Last viewed week",
+  "ExportAll": "Export All",
   "Alerts": {
     "NotLogin": "Not signed in",
     "LoginExpired": "Login expired. Please login again",
@@ -46,6 +42,7 @@
     "Damage": "Damage",
     "Status": "Status",
     "LastModified": "Last Modified",
+    "CreatedAt": "Created At",
     "Null": "Not reported",
     "Week": "Week",
     "Boss": "Boss",
@@ -70,15 +67,22 @@
     "Export": "Export",
     "ExportCSV": "Export as CSV",
     "ExportCheckTitle": "Export all as CSV?",
-    "ExportCheckDescription": "You can only do this once per minute!",
-    "Favorite": "Favorite"
+    "ExportCheckDescription": "You can only do this once per minute!"
   },
+  "Favorite": "Favorite",
   "Cancel": "Cancel",
   "Add": "Add",
   "Edit": "Edit",
   "Choose": "Choose",
+  "Other": "Other",
   "Null": "Null",
   "ERROR": "ERROR",
   "Agree": "Agree",
-  "Disagree": "Disagree"
+  "Disagree": "Disagree",
+  "Notice": "Notice",
+  "Socket": {
+    "System": "System",
+    "RecUP": "Record Update",
+    "RecNEW": "New Record"
+  }
 }

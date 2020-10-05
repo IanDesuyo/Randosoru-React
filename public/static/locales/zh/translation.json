@@ -4,25 +4,21 @@
   "Logout": "登出",
   "Profile": "個人檔案",
   "Redirecting": "跳轉中...",
-  "Notices": {
-    "HasLogout": "已登出"
-  },
+  "HasLogout": "已登出",
   "Name": "名稱",
   "UID": "遊戲ID",
   "UID_Null": "未綁定",
   "JoinedGuild": "所屬戰隊",
   "Guild_Null": "未加入",
   "CreatedAt": "創建時間",
-  "Drawer": {
-    "Home": "首頁",
-    "ChooseWeek": "選擇周次",
-    "ChooseWeekPrompt": "請輸入周次 (1~200)",
-    "CurrentWeek": "當前周次",
-    "Language": "選擇語言",
-    "Favorites": "我的最愛",
-    "LastWeek": "最後檢視周次",
-    "ExportAll": "全部輸出"
-  },
+  "Home": "首頁",
+  "ChooseWeek": "選擇周次",
+  "ChooseWeekPrompt": "請輸入周次 (1~200)",
+  "CurrentWeek": "當前周次",
+  "Language": "選擇語言",
+  "Favorites": "我的最愛",
+  "LastWeek": "最後檢視周次",
+  "ExportAll": "全部輸出",
   "Alerts": {
     "NotLogin": "尚未登入!",
     "LoginExpired": "登入過期, 請重新登入",
@@ -48,6 +44,7 @@
     "Week": "周次",
     "Boss": "王",
     "LastModified": "最後編輯",
+    "CreatedAt": "創建時間",
     "Null": "未回報",
     "StatusType": {
       "1": "正式刀",
@@ -60,7 +57,7 @@
       "22": "完成(補償)",
       "23": "暴死",
       "24": "求救",
-      "99": "已刪除"
+      "99": "刪除"
     },
     "Error": {
       "Damage": "傷害需要介於1跟20000000之間",
@@ -70,15 +67,22 @@
     "Export": "輸出",
     "ExportCSV": "輸出成CSV",
     "ExportCheckTitle": "確定要全部輸出成CSV嗎?",
-    "ExportCheckDescription": "此動作每分鐘只能執行一次!",
-    "Favorite": "我的最愛"
+    "ExportCheckDescription": "此動作每分鐘只能執行一次!"
   },
+  "Favorite": "我的最愛",
   "Cancel": "取消",
   "Add": "新增",
   "Edit": "修改",
   "Choose": "選擇",
+  "Other": "其他",
   "Null": "無",
   "ERROR": "錯誤",
   "Agree": "同意",
-  "Disagree": "取消"
+  "Disagree": "取消",
+  "Notice": "通知",
+  "Socket": {
+    "System": "系統通知",
+    "RecUP": "紀錄更新",
+    "RecNEW": "新紀錄"
+  }
 }

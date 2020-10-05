@@ -1,129 +1,45 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import AuthService from "../Services/AuthService";
-import toastr from "toastr";
+import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
-import Button from "@material-ui/core/Button";
 import MenuIcon from "@material-ui/icons/Menu";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import { makeStyles } from "@material-ui/core/styles";
-import LeftDrawer from "./LeftDrawer";
+import useScrollTrigger from "@material-ui/core/useScrollTrigger";
+import Slide from "@material-ui/core/Slide";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-  list: {
-    width: 250,
-  },
-}));
+function HideOnScroll(props) {
+  const { children } = props;
+  const trigger = useScrollTrigger();
+
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
 
 export default function NavBar(props) {
   const { t } = useTranslation();
-  const classes = useStyles();
-  const { position } = props;
-  const [drawerOpen, setDrawer] = useState(false);
-  const [anchorOpen, setAnchor] = useState();
-  const [currentUser, setCurrentUser] = useState();
-
-  useEffect(() => {
-    const Authsubscribe = AuthService.currentUser.subscribe(setCurrentUser);
-    return () => {
-      Authsubscribe.unsubscribe();
-      setCurrentUser(null);
-    };
-  }, []);
-
-  const openDrawer = () => {
-    setDrawer(true);
-  };
-
-  const handleDrawerToggle = value => {
-    setDrawer(value);
-  };
-
-  const openAnchor = event => {
-    setAnchor(event.currentTarget);
-  };
-
-  const handleAnchorClose = () => {
-    setAnchor(null);
-  };
-
-  const handleLogout = () => {
-    setAnchor(null);
-    AuthService.logout();
-    toastr.success(t("Notices.HasLogout"), "", {
-      closeButton: true,
-      positionClass: "toast-bottom-right",
-    });
-  };
-
+  const { menuClick } = props;
   return (
-    <React.Fragment>
-      <AppBar position={position}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="menu"
-            onClick={openDrawer}
-          >
+    <HideOnScroll>
+      <AppBar position="static">
+        <Toolbar variant="dense">
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={menuClick}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography
+            variant="h6"
+            component={Link}
+            style={{ textDecoration: "none", color: "unset" }}
+            to="/"
+          >
             {t("Title")}
           </Typography>
-          {currentUser ? (
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={openAnchor}
-                color="inherit"
-              >
-                <AccountCircleIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorOpen}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={!!anchorOpen}
-                onClose={handleAnchorClose}
-              >
-                <MenuItem component={Link} to="/users/me" onClick={handleAnchorClose}>
-                  {t("Profile")}
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>{t("Logout")}</MenuItem>
-              </Menu>
-            </div>
-          ) : (
-            <Button color="inherit" component={Link} to="/login">
-              {t("Login")}
-            </Button>
-          )}
         </Toolbar>
       </AppBar>
-      <LeftDrawer open={drawerOpen} onClose={handleDrawerToggle} />
-    </React.Fragment>
+    </HideOnScroll>
   );
 }

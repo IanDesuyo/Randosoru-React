@@ -4,25 +4,21 @@
   "Logout": "登出",
   "Profile": "个人档案",
   "Redirecting": "跳转中...",
-  "Notices": {
-    "HasLogout": "已登出"
-  },
+  "HasLogout": "已登出",
   "Name": "名称",
   "UID": "游戏ID",
   "UID_Null": "未绑定",
   "JoinedGuild": "所属战队",
   "Guild_Null": "未加入",
   "CreatedAt": "创建时间",
-  "Drawer": {
-    "Home": "首页",
-    "ChooseWeek": "选择周次",
-    "ChooseWeekPrompt": "请输入周次 (1~200)",
-    "CurrentWeek": "当前周次",
-    "Language": "选择语言",
-    "Favorites": "我的最爱",
-    "LastWeek": "最后检视周次",
-    "ExportAll": "全部输出"
-  },
+  "Home": "首页",
+  "ChooseWeek": "选择周次",
+  "ChooseWeekPrompt": "请输入周次 (1~200)",
+  "CurrentWeek": "当前周次",
+  "Language": "选择语言",
+  "Favorites": "我的最爱",
+  "LastWeek": "最后检视周次",
+  "ExportAll": "全部输出",
   "Alerts": {
     "NotLogin": "尚未登入!",
     "LoginExpired": "登入过期, 请重新登入",
@@ -33,7 +29,7 @@
     "FormNotFound": "找不到此报名表",
     "FormBadID": "报名表格式错误",
     "FormBadWeek": "周次格式错误",
-    "TooFast": "慢一点啦..."
+    "TooFast": "太快了啦... 慢点行不"
   },
   "Record": {
     "TitleFormat": "第{{week}}周 - {{title}}",
@@ -48,6 +44,7 @@
     "Week": "周次",
     "Boss": "王",
     "LastModified": "最后编辑",
+    "CreatedAt": "创建时间",
     "Null": "未回报",
     "StatusType": {
       "1": "正式刀",
@@ -60,7 +57,7 @@
       "22": "完成(补偿)",
       "23": "暴死",
       "24": "求救",
-      "99": "已删除"
+      "99": "删除"
     },
     "Error": {
       "Damage": "伤害需要介于1跟20000000之间",
@@ -70,15 +67,22 @@
     "Export": "输出",
     "ExportCSV": "输出成CSV",
     "ExportCheckTitle": "确定要全部输出成CSV吗?",
-    "ExportCheckDescription": "此动作每分钟只能执行一次!",
-    "Favorite": "我的最爱"
+    "ExportCheckDescription": "此动作每分钟只能执行一次!"
   },
+  "Favorite": "我的最爱",
   "Cancel": "取消",
   "Add": "新增",
   "Edit": "修改",
   "Choose": "选择",
+  "Other": "其他",
   "Null": "无",
   "ERROR": "错误",
   "Agree": "同意",
-  "Disagree": "取消"
+  "Disagree": "取消",
+  "Notice": "通知",
+  "Socket": {
+    "System": "系统通知",
+    "RecUP": "纪录更新",
+    "RecNEW": "新纪录"
+  }
 }
