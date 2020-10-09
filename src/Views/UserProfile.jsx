@@ -13,6 +13,7 @@ import { Grid } from "@material-ui/core";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useAuth } from "../Services/Auth";
+import ErrorHandler from "../Services/ErrorHandler";
 
 const useStyles = makeStyles(theme => ({
   avatarBox: {
@@ -35,6 +36,7 @@ export default function UserProfile() {
   const [data, setData] = useState();
 
   const fetchUser = () => {
+    document.title = t("Profile") + " - " + t("Title");
     if (id !== "me" && (id.length < 6 || id.length > 10)) {
       return setStatus(400);
     } else if (id === "me" && !token) {
@@ -60,14 +62,12 @@ export default function UserProfile() {
         document.title = res.data.name + " - " + t("Title");
       })
       .catch(error => {
+        ErrorHandler(error);
         setStatus(error.response.status);
       });
   };
 
-  useEffect(() => {
-    fetchUser();
-    document.title = t("Profile") + " - " + t("Title");
-  }, [id]);
+  useEffect(fetchUser, [id]);
 
   if (!status) {
     return (

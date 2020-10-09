@@ -33,6 +33,7 @@ import toastr from "toastr";
 import LangDialog from "./LangDialog";
 import { useFav } from "../Services/Favorite";
 import ExportDialog from "./ExportDialog";
+import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -154,12 +155,26 @@ export default function LeftDrawer(props) {
             <></>
           )}
           {currentForm && token ? (
-            <ListItem button key="3" onClick={handleExportDialogOpen}>
-              <ListItemIcon>
-                <SaveAlt />
-              </ListItemIcon>
-              <ListItemText primary={t("ExportAll")} />
-            </ListItem>
+            <>
+              <ListItem button key="3" onClick={handleExportDialogOpen}>
+                <ListItemIcon>
+                  <SaveAlt />
+                </ListItemIcon>
+                <ListItemText primary={t("ExportAll")} />
+              </ListItem>
+              <ListItem
+                button
+                key="4"
+                component={Link}
+                to={`/forms/${currentForm.id}/modify`}
+                onClick={handleClose}
+              >
+                <ListItemIcon>
+                  <EditIcon />
+                </ListItemIcon>
+                <ListItemText primary={t("Modify")} />
+              </ListItem>
+            </>
           ) : (
             <></>
           )}
@@ -190,7 +205,7 @@ export default function LeftDrawer(props) {
             )}
             <Divider />
             <Typography className={classes.appDetails} variant="subtitle2">
-              Version:{app_version}
+              {`Version:${app_version}`}
               <br />
               <GitHubIcon fontSize="small" /> Randosoru-React
             </Typography>

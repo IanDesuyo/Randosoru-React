@@ -21,6 +21,7 @@ import ExportCsv from "../Services/ExportCsv";
 import { MTableToolbar } from "material-table";
 import { useAuth } from "../Services/Auth";
 import { useFav } from "../Services/Favorite";
+import ErrorHandler from "../Services/ErrorHandler";
 import toaster from "toastr";
 
 const tableIcons = {
@@ -81,9 +82,6 @@ export default function RecordTable(props) {
   const [recordDialogOpen, setRecordDialogOpen] = useState(false);
   const [recordDetailsOpen, setRecordDetailsOpen] = useState(false);
   const [rowData, setRowData] = useState();
-  const [bossHp, setBossHp] = useState(0);
-  const [totalDamage, setTotalDamage] = useState(0);
-  const [hpPercent, setHpPercent] = useState(100);
 
   const userID = useMemo(() => {
     try {
@@ -133,7 +131,7 @@ export default function RecordTable(props) {
           setLoading(false);
         })
         .catch(error => {
-          console.log(error);
+          ErrorHandler(error);
           setLoading(false);
         });
       setRecordDialogOpen(false);
@@ -148,11 +146,10 @@ export default function RecordTable(props) {
     Axios.get(`/api/forms/${formDetail.id}/week/${week}/boss/${boss}`)
       .then(res => {
         setRowData(res.data);
-        getDamage(res.data);
         setLoading(false);
       })
       .catch(error => {
-        console.log(error);
+        ErrorHandler(error);
         setLoading(false);
       });
   };
@@ -182,29 +179,30 @@ export default function RecordTable(props) {
     };
   };
 
-  const getDamage = data => {
-    if (Object.keys(data).length === 0) {
-      return setTotalDamage(0);
+  const { totalDamage, hpPercent, bossHp } = useMemo(() => {
+    let totalDamage = 0;
+    let hpPercent = 0;
+    let bossHp = 0;
+    if (rowData && rowData.length !== 0) {
+      totalDamage = rowData.map(row => row.damage).reduce((pre, curr) => pre + curr);
     }
-    let damage = data.map(row => row.damage).reduce((pre, curr) => pre + curr);
-    if (!damage) {
-      damage = 0;
+    if (!totalDamage) {
+      totalDamage = 0;
     }
-    setTotalDamage(damage);
 
-    let stage = 1;
+    let stage = 0;
     if (week >= 35) {
-      stage(4);
+      stage = 3;
     } else if (week >= 11) {
-      stage(3);
+      stage = 2;
     } else if (week >= 4) {
-      stage(2);
+      stage = 1;
     }
 
-    let tempBossHp = formDetail.boss[boss - 1].hp[stage];
-    setHpPercent(((tempBossHp - damage) / tempBossHp) * 100);
-    setBossHp(tempBossHp);
-  };
+    bossHp = formDetail.boss[boss - 1].hp[stage];
+    hpPercent = ((bossHp - totalDamage) / bossHp) * 100;
+    return { totalDamage, hpPercent, bossHp };
+  }, [rowData]);
 
   const FormTracker = data => {
     switch (data.type) {
@@ -216,7 +214,8 @@ export default function RecordTable(props) {
             setRowData(prev => [...prev.filter(row => row.id !== data.data.id), data.data]);
           }
           toaster.success(
-            `${data.data.user.name}更新了${data.data.week}周${data.data.boss}王的記錄\n狀態: ${data.data.status}`,
+            `${data.data.user.name}更新了${data.data.week}周${data.data.boss}王的記錄<br />
+            ${t("Record.StatusType." + data.data.status)}`,
             t("Socket.RecUP"),
             {
               closeButton: true,
@@ -230,7 +229,8 @@ export default function RecordTable(props) {
           setRowData(prev => [...prev, data.data]);
         }
         toaster.success(
-          `${data.data.user.name}新增一筆${data.data.week}周${data.data.boss}王的記錄\n狀態: ${data.data.status}`,
+          `${data.data.user.name}新增一筆${data.data.week}周${data.data.boss}王的記錄<br />
+          ${t("Record.StatusType." + data.data.status)}`,
           t("Socket.RecNEW"),
           {
             closeButton: true,
@@ -264,8 +264,8 @@ export default function RecordTable(props) {
     };
   }, [formDetail, week, boss, socket]);
 
-  return (
-    <>
+  const mtable = useMemo(() => {
+    return (
       <MaterialTable
         icons={tableIcons}
         title={t("Record.TitleFormat", {
@@ -397,7 +397,7 @@ export default function RecordTable(props) {
             icon: () => {
               return isFav(formDetail.id) ? <StarIcon /> : <StarBorderIcon />;
             },
-            tooltip: t("Record.Favorite"),
+            tooltip: t("Favorite"),
             onClick: () => {
               isFav(formDetail.id)
                 ? removeFav(formDetail.title, formDetail.id)
@@ -407,6 +407,12 @@ export default function RecordTable(props) {
           },
         ]}
       />
+    );
+  }, [rowData, isFav]);
+
+  return (
+    <>
+      {mtable}
       <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>

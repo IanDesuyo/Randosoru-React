@@ -10,6 +10,7 @@ import ExportCsv from "../Services/ExportCsv";
 import Axios from "axios";
 import { useFav } from "../Services/Favorite";
 import { useAuth } from "../Services/Auth";
+import ErrorHandler from "../Services/ErrorHandler";
 
 export default function ExportChecker(props) {
   const { onClose, open } = props;
@@ -47,9 +48,7 @@ export default function ExportChecker(props) {
           t
         );
       })
-      .catch(error => {
-        console.log(error);
-      });
+      .catch(error => ErrorHandler(error));
     setTimeout(() => {
       handleClose();
     }, 1000);

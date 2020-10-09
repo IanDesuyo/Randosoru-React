@@ -14,6 +14,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { useTranslation } from "react-i18next";
 import Typography from "@material-ui/core/Typography";
 import { Toolbar } from "@material-ui/core";
+import ErrorHandler from "../Services/ErrorHandler";
 
 export default function FormConfig() {
   let { id } = useParams();
@@ -31,11 +32,11 @@ export default function FormConfig() {
       .then(res => {
         setFormDetail(res.data);
         setStatus(200);
-        console.log(res.data);
         document.title = `${res.data.title} - ${t("Title")}`;
         return;
       })
       .catch(error => {
+        ErrorHandler(error);
         setStatus(error.response.status);
       });
   };

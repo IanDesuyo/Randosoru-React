@@ -16,11 +16,12 @@ import Typography from "@material-ui/core/Typography";
 import webSocket from "socket.io-client";
 import RecordTable from "../Components/RecordTable";
 import { Toolbar } from "@material-ui/core";
+import ErrorHandler from "../Services/ErrorHandler";
 
 export default function FormRecord() {
   let { id, week } = useParams();
   const { t } = useTranslation();
-  const [viewMode, setviewMode] = useState(0);
+  const [viewMode] = useState(0);
   const [status, setStatus] = useState();
   const [formDetail, setFormDetail] = useState();
   const [ws, setWs] = useState();
@@ -40,11 +41,11 @@ export default function FormRecord() {
       .then(res => {
         setFormDetail(res.data);
         setStatus(200);
-        console.log(res.data);
         document.title = `${res.data.title} - ${t("Title")}`;
         return;
       })
       .catch(error => {
+        ErrorHandler(error);
         setStatus(error.response.status);
       });
   };
@@ -57,7 +58,6 @@ export default function FormRecord() {
     setWs(socket);
 
     return () => {
-      console.log("OFF");
       socket.disconnect();
     };
   }, [id, viewMode]);

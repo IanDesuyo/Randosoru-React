@@ -7,6 +7,7 @@ import Box from "@material-ui/core/Box";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAuth } from "../Services/Auth";
+import ErrorHandler from "../Services/ErrorHandler";
 
 export default function Discord() {
   const { setToken } = useAuth();
@@ -24,6 +25,7 @@ export default function Discord() {
           window.close();
         })
         .catch(error => {
+          ErrorHandler(error);
           localStorage.setItem("loginStatus", error.response.data.detail);
           setError(error.response.data.detail);
           localStorage.removeItem("token");

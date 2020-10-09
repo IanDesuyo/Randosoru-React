@@ -11,7 +11,7 @@ import NavBar from "./Components/Navbar";
 import LeftDrawer from "./Components/LeftDrawer";
 import SeverLogin from "./Services/Liff";
 
-const Index = lazy(() => import("./Views/Index"));
+const Home = lazy(() => import("./Views/Home"));
 const Login = lazy(() => import("./Views/Login"));
 const DiscordOauthRedirect = lazy(() => import("./Views/DiscordOauthRedirect"));
 const LineOauthRedirect = lazy(() => import("./Views/LineOauthRedirect"));
@@ -28,7 +28,18 @@ const checkDarkMode = deviceDarkMode => {
   return darkMode;
 };
 
+const versionUpdate = () => {
+  try {
+    JSON.parse(localStorage.getItem("token"));
+  } catch (e) {
+    localStorage.removeItem("token");
+  }
+  localStorage.removeItem("favorite");
+};
+
 export default function App() {
+  versionUpdate();
+
   const [darkMode, setDarkMode] = useState(
     checkDarkMode(useMediaQuery("(prefers-color-scheme: dark)"))
   );
@@ -40,6 +51,7 @@ export default function App() {
   const [me, setMeState] = useState(existMe);
   const [fav, setFavState] = useState(existFav || []);
   const [currentForm, setCurrentFormState] = useState();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [liffState, setLiffState] = useState(false);
   const { liff } = window;
 
@@ -62,13 +74,12 @@ export default function App() {
     setFavState(temp);
     localStorage.setItem("fav", JSON.stringify(temp));
   };
+
   const removeFav = (title, id) => {
     let temp = fav.filter(x => x.id !== id);
     setFavState(temp);
     localStorage.setItem("fav", JSON.stringify(temp));
   };
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const theme = useMemo(
     () =>
@@ -92,7 +103,6 @@ export default function App() {
   };
 
   const handleDrawerToggle = () => {
-    console.log(drawerOpen);
     setDrawerOpen(!drawerOpen);
   };
 
@@ -127,8 +137,7 @@ export default function App() {
               setCurrentForm: setCurrentFormState,
             }}
           >
-            <Analytics>
-              {/* id="UA-170804064-1" */}
+            <Analytics id={process.env.REACT_APP_GA}>
               <NavBar menuClick={handleDrawerToggle} />
               <LeftDrawer
                 open={drawerOpen}
@@ -138,7 +147,7 @@ export default function App() {
               />
               <Switch>
                 <Suspense fallback={<Fragment />}>
-                  <Route exact path="/" component={Index} />
+                  <Route exact path="/" component={Home} />
                   <Route path="/login" component={AuthLayout} />
                   <Route path="/users" component={UserLayout} />
                   <Route path={["/forms", "/form"]} component={FormLayout} />

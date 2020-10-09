@@ -8,21 +8,13 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
-import { makeStyles } from "@material-ui/core/styles";
 import CommentIcon from "@material-ui/icons/Comment";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import UpdateIcon from "@material-ui/icons/Update";
 import RssFeedIcon from "@material-ui/icons/RssFeed";
 
-const useStyles = makeStyles({
-  damage: {
-    backgroundColor: "#ff3333",
-  },
-});
-
 export default function RecordDetails(props) {
-  const classes = useStyles();
   const { onClose, open, rowData } = props;
   const { t } = useTranslation();
 

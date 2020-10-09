@@ -23,6 +23,7 @@ function HideOnScroll(props) {
 export default function NavBar(props) {
   const { t } = useTranslation();
   const { menuClick } = props;
+  
   return (
     <HideOnScroll>
       <AppBar position="static">
