@@ -1,6 +1,6 @@
 {
   "name": "randosoru-react",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
@@ -11,6 +11,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.20.0",
+    "formik": "^2.2.0",
     "i18next": "^19.7.0",
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.0.21",
@@ -23,7 +24,8 @@
     "react-router-ga": "^1.2.3",
     "react-scripts": "3.4.3",
     "socket.io-client": "^2.3.1",
-    "toastr": "^2.1.4"
+    "toastr": "^2.1.4",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "start": "react-scripts start",

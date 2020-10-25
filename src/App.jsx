@@ -5,11 +5,13 @@ import "./App.css";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { AuthContext } from "./Services/Auth";
+import { AuthContext, checkToken } from "./Services/Auth";
 import { FavContext } from "./Services/Favorite";
 import NavBar from "./Components/Navbar";
 import LeftDrawer from "./Components/LeftDrawer";
-import SeverLogin from "./Services/Liff";
+import Axios from "axios";
+import toastr from "toastr";
+import { useTranslation } from "react-i18next";
 
 const Home = lazy(() => import("./Views/Home"));
 const Login = lazy(() => import("./Views/Login"));
@@ -17,7 +19,7 @@ const DiscordOauthRedirect = lazy(() => import("./Views/DiscordOauthRedirect"));
 const LineOauthRedirect = lazy(() => import("./Views/LineOauthRedirect"));
 const UserProfile = lazy(() => import("./Views/UserProfile"));
 const FormRecord = lazy(() => import("./Views/FormRecord"));
-const FormConfig = lazy(() => import("./Views/FormConfig"));
+const FormConfig = lazy(() => import("./Views/FormModify"));
 
 const checkDarkMode = deviceDarkMode => {
   let darkMode = JSON.parse(localStorage.getItem("darkMode"));
@@ -45,24 +47,22 @@ export default function App() {
   );
 
   const existToken = JSON.parse(localStorage.getItem("token"));
-  const existMe = JSON.parse(localStorage.getItem("me"));
   const existFav = JSON.parse(localStorage.getItem("fav"));
   const [token, setTokenState] = useState(existToken);
-  const [me, setMeState] = useState(existMe);
   const [fav, setFavState] = useState(existFav || []);
   const [currentForm, setCurrentFormState] = useState();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [liffState, setLiffState] = useState(false);
   const { liff } = window;
+  const { t } = useTranslation();
 
   const setToken = data => {
-    localStorage.setItem("token", JSON.stringify(data));
+    if (data == null) {
+      localStorage.removeItem("token");
+    } else {
+      localStorage.setItem("token", JSON.stringify(data));
+    }
     setTokenState(data);
-  };
-
-  const setMe = data => {
-    localStorage.setItem("me", JSON.stringify(data));
-    setMeState(data);
   };
 
   const isFav = id => {
@@ -115,9 +115,19 @@ export default function App() {
       if (token) return;
 
       if (liff.isInClient() || liff.isLoggedIn()) {
-        SeverLogin(liff.getAccessToken());
+        Axios.post(`/api/oauth/line_liff?access_token=${liff.getAccessToken()}`).then(res => {
+          localStorage.removeItem("loginStatus");
+          setToken(res.data.token);
+        });
       }
     })();
+    if (!checkToken(existToken)) {
+      toastr.info(t("Alerts.TokenExpired"), {
+        closeButton: true,
+        positionClass: "toast-bottom-right",
+      });
+      setToken(null);
+    }
   }, []);
 
   if (liffState) return <></>;
@@ -126,7 +136,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <AuthContext.Provider value={{ token, setToken: setToken, me, setMe: setMe }}>
+        <AuthContext.Provider value={{ token, setToken: setToken }}>
           <FavContext.Provider
             value={{
               fav,

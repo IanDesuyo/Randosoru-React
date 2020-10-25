@@ -41,7 +41,7 @@ export default function FormRecord() {
       .then(res => {
         setFormDetail(res.data);
         setStatus(200);
-        document.title = `${res.data.title} - ${t("Title")}`;
+        document.title = `${res.data.title} - ${t("Brand")}`;
         return;
       })
       .catch(error => {

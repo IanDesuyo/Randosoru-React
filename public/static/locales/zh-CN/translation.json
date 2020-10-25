@@ -1,5 +1,5 @@
 {
-  "Title": "战队管理协会",
+  "Brand": "战队管理协会",
   "Login": "登入",
   "Logout": "登出",
   "Profile": "个人档案",
@@ -29,7 +29,8 @@
     "FormNotFound": "找不到此报名表",
     "FormBadID": "报名表格式错误",
     "FormBadWeek": "周次格式错误",
-    "TooFast": "太快了啦... 慢点行不"
+    "TooFast": "太快了啦... 慢点行不",
+    "TokenExpired": "登入过期, 请重新登入"
   },
   "Record": {
     "TitleFormat": "第{{week}}周 - {{title}}",
@@ -84,5 +85,11 @@
     "System": "系统通知",
     "RecUP": "纪录更新",
     "RecNEW": "新纪录"
-  }
+  },
+  "Modify": "修改设定",
+  "General": "通用",
+  "Title": "标题",
+  "Description": "描述",
+  "ImageURL": "图片URL",
+  "Hp": "血量"
 }

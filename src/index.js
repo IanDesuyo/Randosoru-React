@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, Fragment } from "react";
 import ReactDOM from "react-dom";
 import App from "./App.jsx";
 import * as serviceWorker from "./serviceWorker";
@@ -15,7 +15,9 @@ Sentry.init({
 ReactDOM.render(
   <React.StrictMode>
     <Sentry.ErrorBoundary showDialog>
+    <Suspense fallback={<Fragment />}>
       <App />
+    </Suspense>
     </Sentry.ErrorBoundary>
   </React.StrictMode>,
   document.getElementById("root")

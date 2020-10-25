@@ -37,7 +37,7 @@ export default function NavBar(props) {
             style={{ textDecoration: "none", color: "unset" }}
             to="/"
           >
-            {t("Title")}
+            {t("Brand")}
           </Typography>
         </Toolbar>
       </AppBar>

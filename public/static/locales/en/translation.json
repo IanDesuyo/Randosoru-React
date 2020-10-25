@@ -1,5 +1,5 @@
 {
-  "Title": "Clan Manage Union",
+  "Brand": "Clan Manage Union",
   "Login": "Login",
   "Logout": "Logout",
   "Profile": "Profile",
@@ -29,7 +29,8 @@
     "FormNotFound": "Form not found...",
     "FormBadID": "Wrong form ID format",
     "FormBadWeek": "Wrong week format",
-    "TooFast": "Too fast! Please slow down"
+    "TooFast": "Too fast! Please slow down",
+    "TokenExpired": "Login expired. Please login again"
   },
   "Record": {
     "TitleFormat": "{{title}} - Week {{week}}",
@@ -84,5 +85,11 @@
     "System": "System",
     "RecUP": "Record Update",
     "RecNEW": "New Record"
-  }
+  },
+  "Modify": "Modify",
+  "General": "General",
+  "Title": "Title",
+  "Description": "Description",
+  "ImageURL": "Image URL",
+  "Hp": "HP"
 }

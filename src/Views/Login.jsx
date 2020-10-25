@@ -72,7 +72,7 @@ export default function Login() {
   const [error] = useState(localStorage.getItem("loginStatus"));
 
   useEffect(() => {
-    document.title = t("Login") + " - " + t("Title");
+    document.title = t("Login") + " - " + t("Brand");
     localStorage.removeItem("loginStatus");
   });
 

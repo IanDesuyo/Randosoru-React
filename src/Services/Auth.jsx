@@ -23,3 +23,17 @@ export function loginDiscord() {
 export function loginLine() {
   window.liff.login();
 }
+
+export function checkToken() {
+  try {
+    const token = JSON.parse(localStorage.getItem("token"));
+    const data = JSON.parse(atob(token.split(".")[1]));
+    if (data.exp * 1000 > new Date().getTime()) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    return true;
+  }
+}

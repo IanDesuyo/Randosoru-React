@@ -31,12 +31,12 @@ export default function UserProfile() {
   const { id } = useParams();
   const classes = useStyles();
   const { t } = useTranslation();
-  const { token, setMe } = useAuth();
+  const { token } = useAuth();
   const [status, setStatus] = useState();
   const [data, setData] = useState();
 
   const fetchUser = () => {
-    document.title = t("Profile") + " - " + t("Title");
+    document.title = t("Profile") + " - " + t("Brand");
     if (id !== "me" && (id.length < 6 || id.length > 10)) {
       return setStatus(400);
     } else if (id === "me" && !token) {
@@ -54,12 +54,9 @@ export default function UserProfile() {
         : null
     )
       .then(res => {
-        if (id === "me") {
-          setMe({ ...res.data, cache: new Date() * 1000 });
-        }
         setData(res.data);
         setStatus(200);
-        document.title = res.data.name + " - " + t("Title");
+        document.title = res.data.name + " - " + t("Brand");
       })
       .catch(error => {
         ErrorHandler(error);

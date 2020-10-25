@@ -1,5 +1,5 @@
 {
-  "Title": "戰隊管理協會",
+  "Brand": "戰隊管理協會",
   "Login": "登入",
   "Logout": "登出",
   "Profile": "個人檔案",
@@ -29,7 +29,8 @@
     "FormNotFound": "找不到此報名表",
     "FormBadID": "報名表格式錯誤",
     "FormBadWeek": "周次格式錯誤",
-    "TooFast": "你跟桐人一樣快? 慢一點啦..."
+    "TooFast": "你跟桐人一樣快? 慢一點啦...",
+    "TokenExpired": "登入過期, 請重新登入"
   },
   "Record": {
     "TitleFormat": "第{{week}}周 - {{title}}",
@@ -84,5 +85,11 @@
     "System": "系統通知",
     "RecUP": "紀錄更新",
     "RecNEW": "新紀錄"
-  }
+  },
+  "Modify": "修改設定",
+  "General": "通用",
+  "Title": "標題",
+  "Description": "描述",
+  "ImageURL": "圖片URL",
+  "Hp": "血量"
 }
