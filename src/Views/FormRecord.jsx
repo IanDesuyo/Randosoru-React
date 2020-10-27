@@ -53,8 +53,7 @@ export default function FormRecord() {
   useEffect(() => {
     fetchFormDetails();
     let socket = webSocket("/", { transports: ["websocket"] });
-
-    socket.emit("track", { form_id: id });
+    socket.on("connect", () => socket.emit("track", { form_id: id }));
     setWs(socket);
 
     return () => {
