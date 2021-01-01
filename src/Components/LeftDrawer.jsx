@@ -11,8 +11,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import { Link, useHistory } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Select from "@material-ui/core/Select";
 import DialogContent from "@material-ui/core/DialogContent";
 import Divider from "@material-ui/core/Divider";
 import Collapse from "@material-ui/core/Collapse";
@@ -52,6 +51,9 @@ const useStyles = makeStyles(theme => ({
     paddingTop: 10,
     paddingLeft: 10,
   },
+  weekSelecter: {
+    width: 250,
+  },
 }));
 
 export default function LeftDrawer(props) {
@@ -83,34 +85,14 @@ export default function LeftDrawer(props) {
     });
   };
 
-  const handleLangDialogOpen = () => {
-    setLangDialogOpen(true);
-  };
-
-  const handleLangDialogClose = () => {
-    setLangDialogOpen(false);
-  };
-
-  const handleFavDrawer = () => {
-    setFavDrawerOpen(!favDrawerOpen);
-  };
-
   const openChooseWeek = () => {
     onToggle();
     setChooseWeekOpen(true);
   };
 
-  const handleChooseWeekClose = () => {
-    setChooseWeekOpen(false);
-  };
-
   const handleExportDialogOpen = () => {
     onToggle();
     setExportDialogOpen(true);
-  };
-
-  const handleExportDialogClose = () => {
-    setExportDialogOpen(false);
   };
 
   return (
@@ -179,9 +161,13 @@ export default function LeftDrawer(props) {
             <></>
           )}
           <Divider />
-          <FavList onClick={handleClose} open={favDrawerOpen} handleDrawer={handleFavDrawer} />
+          <FavList
+            onClick={handleClose}
+            open={favDrawerOpen}
+            handleDrawer={() => setFavDrawerOpen(!favDrawerOpen)}
+          />
           <div className={classes.bottom}>
-            <ListItem button key="97" onClick={handleLangDialogOpen}>
+            <ListItem button key="97" onClick={() => setLangDialogOpen(true)}>
               <ListItemIcon>
                 <LanguageIcon />
               </ListItemIcon>
@@ -205,16 +191,16 @@ export default function LeftDrawer(props) {
             )}
             <Divider />
             <Typography className={classes.appDetails} variant="subtitle2">
-              {`Version:${app_version}`}
+              {`Version: ${app_version}`}
               <br />
               <GitHubIcon fontSize="small" /> Randosoru-React
             </Typography>
           </div>
         </List>
       </SwipeableDrawer>
-      <LangDialog open={langDialogOpen} onClose={handleLangDialogClose} />
-      <ChooseWeek open={chooseWeekOpen} onClose={handleChooseWeekClose} />
-      <ExportDialog open={exportDialogOpen} onClose={handleExportDialogClose} />
+      <LangDialog open={langDialogOpen} onClose={() => setLangDialogOpen(false)} />
+      <ChooseWeek open={chooseWeekOpen} onClose={() => setChooseWeekOpen(false)} />
+      <ExportDialog open={exportDialogOpen} onClose={() => setExportDialogOpen(false)} />
     </React.Fragment>
   );
 }
@@ -272,66 +258,29 @@ function ChooseWeek(props) {
     onClose(false);
   };
 
-  const manualChoose = () => {
-    let week_in;
-    while (typeof week_in !== "number") {
-      week_in = parseInt(prompt(t("ChooseWeekPrompt")));
-      if (week_in === null || isNaN(week_in)) {
-        return;
-      }
-      if (week_in < 1 || week_in > 200) {
-        week_in = null;
-      }
-    }
-    history.push("/forms/" + currentForm.id + "/week/" + week_in);
-    onClose(false);
+  const handleChange = event => {
+    history.push("/forms/" + currentForm.id + "/week/" + event.target.value);
+    handleClose();
   };
 
   if (!currentForm) {
     return <></>;
   }
+  
   return (
     <Dialog onClose={handleClose} open={open} maxWidth="sm">
       <DialogTitle>{t("ChooseWeek")}</DialogTitle>
-      <Typography align="center">
-        {t("CurrentWeek")}: {currentForm.week}
-      </Typography>
       <DialogContent className={classes.chooseWeekBtn}>
-        <ButtonGroup>
-          <Button
-            component={Link}
-            to={"/forms/" + currentForm.id + "/week/" + 1}
-            disabled={currentForm.week <= 1}
-            onClick={handleClose}
-          >
-            1
-          </Button>
-          <Button
-            component={Link}
-            to={"/forms/" + currentForm.id + "/week/" + (currentForm.week - 1)}
-            disabled={currentForm.week <= 1 || currentForm.week > 200}
-            onClick={handleClose}
-          >
-            {"<"}
-          </Button>
-          <Button onClick={manualChoose}>{t("Other")}</Button>
-          <Button
-            component={Link}
-            to={"/forms/" + currentForm.id + "/week/" + (currentForm.week + 1)}
-            disabled={currentForm.week < 1 || currentForm.week >= 200}
-            onClick={handleClose}
-          >
-            {">"}
-          </Button>
-          <Button
-            component={Link}
-            to={"/forms/" + currentForm.id + "/week/" + 200}
-            disabled={currentForm.week >= 200}
-            onClick={handleClose}
-          >
-            200
-          </Button>
-        </ButtonGroup>
+        <Select
+          native
+          className={classes.weekSelecter}
+          value={currentForm.week}
+          onChange={handleChange}
+        >
+          {[...Array(200).keys()].map((val, index) => (
+            <option value={val + 1}>{val + 1}</option>
+          ))}
+        </Select>
       </DialogContent>
     </Dialog>
   );

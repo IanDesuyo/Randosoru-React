@@ -22,6 +22,7 @@ import Divider from "@material-ui/core/Divider";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../Services/Auth";
+import { useFav } from "../Services/Favorite";
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -52,6 +53,7 @@ export default function FormConfig() {
   const { t } = useTranslation();
   const [status, setStatus] = useState();
   const [formDetail, setFormDetail] = useState();
+  const { setCurrentForm } = useFav();
   const { token } = useAuth();
   const [isLoading, setLoading] = useState(false);
 
@@ -65,6 +67,7 @@ export default function FormConfig() {
         setFormDetail(res.data);
         setStatus(200);
         document.title = `${res.data.title} - ${t("Brand")}`;
+        setCurrentForm({ id: id, week: 0, title: res.data.title })
       })
       .catch(error => {
         ErrorHandler(error);
@@ -264,8 +267,8 @@ const FormSchema = Yup.object().shape({
       image: Yup.string().max(100, "字數過長").url("網址不正確"),
       hp: Yup.array().of(
         Yup.number()
-          .min(1, "血量需介於1~10000000之間")
-          .max(100000000, "血量需介於1~10000000之間")
+          .min(1, "血量需介於1~500000000之間")
+          .max(500000000, "血量需介於1~500000000之間")
           .required("不能為空白")
       ),
     })
