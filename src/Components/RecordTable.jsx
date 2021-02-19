@@ -201,6 +201,9 @@ export default function RecordTable(props) {
 
     bossHp = formDetail.boss[boss - 1].hp[stage];
     hpPercent = ((bossHp - totalDamage) / bossHp) * 100;
+    if (hpPercent < 0) {
+      hpPercent = 0;
+    }
     return { totalDamage, hpPercent, bossHp };
   }, [rowData]);
 
@@ -214,8 +217,12 @@ export default function RecordTable(props) {
             setRowData(prev => [...prev.filter(row => row.id !== data.data.id), data.data]);
           }
           toaster.success(
-            `${data.data.user.name}更新了${data.data.week}周${data.data.boss}王的記錄<br />
-            ${t("Record.StatusType." + data.data.status)}`,
+            t("Socket.RecUPMsg", {
+              name: data.data.user.name,
+              week: data.data.week,
+              boss: data.data.boss,
+              type: t("Record.StatusType." + data.data.status),
+            }),
             t("Socket.RecUP"),
             {
               closeButton: true,
@@ -229,8 +236,12 @@ export default function RecordTable(props) {
           setRowData(prev => [...prev, data.data]);
         }
         toaster.success(
-          `${data.data.user.name}新增一筆${data.data.week}周${data.data.boss}王的記錄<br />
-          ${t("Record.StatusType." + data.data.status)}`,
+          t("Socket.RecNEWMsg", {
+            name: data.data.user.name,
+            week: data.data.week,
+            boss: data.data.boss,
+            type: t("Record.StatusType." + data.data.status),
+          }),
           t("Socket.RecNEW"),
           {
             closeButton: true,

@@ -44,6 +44,7 @@
     "Status": "狀態",
     "Week": "周次",
     "Boss": "王",
+    "Team": "隊伍",
     "LastModified": "最後編輯",
     "CreatedAt": "創建時間",
     "Null": "未回報",
@@ -84,7 +85,12 @@
   "Socket": {
     "System": "系統通知",
     "RecUP": "紀錄更新",
-    "RecNEW": "新紀錄"
+    "RecNEW": "新紀錄",
+    "RecUPMsg": "{{name}}更新了{{week}}周{{boss}}王的紀錄<br/>{{type}}",
+    "RecNEWMsg": "{{name}}新增一筆{{week}}周{{boss}}王的紀錄<br/>{{type}}",
+    "ConnectError": "無法與即時更新系統連線",
+    "TransportError": "與即時更新系統的傳輸已中斷",
+    "ReConnecting": "重新連線中..."
   },
   "Modify": "修改設定",
   "General": "通用",

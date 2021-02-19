@@ -13,6 +13,8 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import UpdateIcon from "@material-ui/icons/Update";
 import RssFeedIcon from "@material-ui/icons/RssFeed";
+import GroupIcon from "@material-ui/icons/Group";
+import Grid from "@material-ui/core/Grid";
 
 export default function RecordDetails(props) {
   const { onClose, open, rowData } = props;
@@ -41,13 +43,31 @@ export default function RecordDetails(props) {
           <DetailItem
             icon={<FavoriteIcon />}
             title={t("Record.Damage")}
-            value={rowData && rowData.damage !== null ? rowData.damage : t("Null")}
+            value={rowData && rowData.damage ? rowData.damage : t("Null")}
           />
           <DetailItem
             icon={<CommentIcon />}
             title={t("Record.Comment")}
-            value={rowData && rowData.comment !== "" ? rowData.comment : t("Null")}
+            value={rowData && rowData.comment ? rowData.comment : t("Null")}
           />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <GroupIcon />
+              </Avatar>
+            </ListItemAvatar>
+            {rowData && rowData.team ? (
+              <Grid container alignContent="center" spacing={1}>
+                {rowData.team.map((chara, index) => (
+                  <Grid item key={index}>
+                    <div key={index} className={`unit unit-${chara.id + chara.star * 10}`} />
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <ListItemText primary={t("Record.Team") + ": " + t("Null")} />
+            )}
+          </ListItem>
           <DetailItem
             icon={<UpdateIcon />}
             title={t("Record.LastModified")}

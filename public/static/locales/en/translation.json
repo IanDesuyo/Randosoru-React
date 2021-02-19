@@ -42,11 +42,12 @@
     "Comment": "Comment",
     "Damage": "Damage",
     "Status": "Status",
+    "Week": "Week",
+    "Boss": "Boss",
+    "Team": "Team",
     "LastModified": "Last Modified",
     "CreatedAt": "Created At",
     "Null": "Not reported",
-    "Week": "Week",
-    "Boss": "Boss",
     "StatusType": {
       "1": "Formal",
       "2": "Reimburse",
@@ -84,7 +85,12 @@
   "Socket": {
     "System": "System",
     "RecUP": "Record Update",
-    "RecNEW": "New Record"
+    "RecNEW": "New Record",
+    "RecUPMsg": "{{name}} updated a record for week {{week}} boss {{boss}}<br/>{{type}}",
+    "RecNEWMsg": "{{name}} added a new record for week {{week}} boss {{boss}}<br/>{{type}}",
+    "ConnectError": "Unable to connect with real-time update system",
+    "TransportError": "The transmission with the real-time update system has been interrupted",
+    "ReConnecting": "Reconnecting..."
   },
   "Modify": "Modify",
   "General": "General",

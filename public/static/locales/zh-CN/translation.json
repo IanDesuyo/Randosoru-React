@@ -29,7 +29,7 @@
     "FormNotFound": "找不到此报名表",
     "FormBadID": "报名表格式错误",
     "FormBadWeek": "周次格式错误",
-    "TooFast": "太快了啦... 慢点行不",
+    "TooFast": "太快了啦! 慢一点...",
     "TokenExpired": "登入过期, 请重新登入"
   },
   "Record": {
@@ -44,6 +44,7 @@
     "Status": "状态",
     "Week": "周次",
     "Boss": "王",
+    "Team": "队伍",
     "LastModified": "最后编辑",
     "CreatedAt": "创建时间",
     "Null": "未回报",
@@ -84,7 +85,12 @@
   "Socket": {
     "System": "系统通知",
     "RecUP": "纪录更新",
-    "RecNEW": "新纪录"
+    "RecNEW": "新纪录",
+    "RecUPMsg": "{{name}}更新了{{week}}周{{boss}}王的纪录<br/>{{type}}",
+    "RecNEWMsg": "{{name}}新增一笔{{week}}周{{boss}}王的纪录<br/>{{type}}",
+    "ConnectError": "无法与即时更新系统连线",
+    "TransportError": "与即时更新系统的传输已中断",
+    "ReConnecting": "重新连线中..."
   },
   "Modify": "修改设定",
   "General": "通用",

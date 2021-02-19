@@ -17,6 +17,7 @@ import webSocket from "socket.io-client";
 import RecordTable from "../Components/RecordTable";
 import { Toolbar } from "@material-ui/core";
 import ErrorHandler from "../Services/ErrorHandler";
+import toastr from "toastr";
 
 export default function FormRecord() {
   let { id, week } = useParams();
@@ -50,13 +51,33 @@ export default function FormRecord() {
       });
   };
 
+  const handleSocketError = (error, reason, socket) => {
+    if (error) {
+      toastr.error(t("Socket.ReConnecting"), t("Socket.ConnectError"), {
+        closeButton: true,
+        positionClass: "toast-bottom-center",
+      });
+    }
+    if (reason) {
+      console.log(reason);
+      toastr.error(t("Socket.ReConnecting"), t("Socket.TransportError"), {
+        closeButton: true,
+        positionClass: "toast-bottom-center",
+      });
+      socket.connect();
+    }
+  };
+
   useEffect(() => {
     fetchFormDetails();
     let socket = webSocket("/", { transports: ["websocket"] });
     socket.on("connect", () => socket.emit("track", { form_id: id }));
+    socket.on("connect_error", error => handleSocketError(error, null, socket));
+    socket.on("disconnect", reason => handleSocketError(null, reason, socket));
     setWs(socket);
 
     return () => {
+      socket.removeAllListeners()
       socket.disconnect();
     };
   }, [id, viewMode]);
