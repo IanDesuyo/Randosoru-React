@@ -33,6 +33,7 @@ import LangDialog from "./LangDialog";
 import { useFav } from "../Services/Favorite";
 import ExportDialog from "./ExportDialog";
 import EditIcon from "@material-ui/icons/Edit";
+import FeaturedPlayListIcon from "@material-ui/icons/FeaturedPlayList";
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -127,12 +128,26 @@ export default function LeftDrawer(props) {
             <ListItemText primary={t("Home")} />
           </ListItem>
           {currentForm ? (
-            <ListItem button key="2" onClick={openChooseWeek}>
-              <ListItemIcon>
-                <CalendarViewDayIcon />
-              </ListItemIcon>
-              <ListItemText primary={t("ChooseWeek")} />
-            </ListItem>
+            <>
+              <ListItem button key="2" onClick={openChooseWeek}>
+                <ListItemIcon>
+                  <CalendarViewDayIcon />
+                </ListItemIcon>
+                <ListItemText primary={t("ChooseWeek")} />
+              </ListItem>
+              <ListItem
+                button
+                key="9"
+                component={Link}
+                to={`/forms/${currentForm.id}/overview`}
+                onClick={handleClose}
+              >
+                <ListItemIcon>
+                  <FeaturedPlayListIcon />
+                </ListItemIcon>
+                <ListItemText primary={t("Overview")} />
+              </ListItem>
+            </>
           ) : (
             <></>
           )}
@@ -266,7 +281,7 @@ function ChooseWeek(props) {
   if (!currentForm) {
     return <></>;
   }
-  
+
   return (
     <Dialog onClose={handleClose} open={open} maxWidth="sm">
       <DialogTitle>{t("ChooseWeek")}</DialogTitle>

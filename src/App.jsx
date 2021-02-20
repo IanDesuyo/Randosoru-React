@@ -20,6 +20,9 @@ const LineOauthRedirect = lazy(() => import("./Views/LineOauthRedirect"));
 const UserProfile = lazy(() => import("./Views/UserProfile"));
 const FormRecord = lazy(() => import("./Views/FormRecord"));
 const FormConfig = lazy(() => import("./Views/FormModify"));
+const FormOverview = lazy(() => import("./Views/FormOverview"));
+
+Axios.defaults.baseURL = "https://guild.randosoru.me/";
 
 const checkDarkMode = deviceDarkMode => {
   let darkMode = JSON.parse(localStorage.getItem("darkMode"));
@@ -195,6 +198,7 @@ function UserLayout() {
 function FormLayout() {
   return (
     <Switch>
+      <Route exact path="/forms/:id/overview" component={FormOverview} />
       <Route exact path="/forms/:id/week/:week" component={FormRecord} />
       <Route exact path="/forms/:id/modify" component={FormConfig} />
       <Redirect exact from="/form/:id/week/:week" to="/forms/:id/week/:week" />
