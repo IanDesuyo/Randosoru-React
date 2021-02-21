@@ -293,7 +293,9 @@ function ChooseWeek(props) {
           onChange={handleChange}
         >
           {[...Array(200).keys()].map((val, index) => (
-            <option value={val + 1}>{val + 1}</option>
+            <option value={val + 1} key={val}>
+              {val + 1}
+            </option>
           ))}
         </Select>
       </DialogContent>
