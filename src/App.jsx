@@ -22,8 +22,6 @@ const FormRecord = lazy(() => import("./Views/FormRecord"));
 const FormConfig = lazy(() => import("./Views/FormModify"));
 const FormOverview = lazy(() => import("./Views/FormOverview"));
 
-Axios.defaults.baseURL = "https://guild.randosoru.me/";
-
 const checkDarkMode = deviceDarkMode => {
   let darkMode = JSON.parse(localStorage.getItem("darkMode"));
   if (darkMode === null) {
