@@ -13,6 +13,8 @@ import Chip from "@material-ui/core/Chip";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Typography } from "@material-ui/core";
 import { useTranslation } from "react-i18next";
+import webSocket from "socket.io-client";
+import toastr from "toastr";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,6 +37,21 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(0.5),
     },
   },
+  s11: {
+    backgroundColor: theme.palette.type === "dark" ? "#002047" : "#7cb6ff",
+  },
+  s21: {
+    backgroundColor: theme.palette.type === "dark" ? "#33422c" : "#99e699",
+  },
+  s22: {
+    backgroundColor: theme.palette.type === "dark" ? "#33422c" : "#99e699",
+  },
+  s23: {
+    backgroundColor: theme.palette.type === "dark" ? "#ff473f" : "#FFD9D7",
+  },
+  s24: {
+    backgroundColor: theme.palette.type === "dark" ? "#d9b100" : "#ffe066",
+  },
 }));
 
 /**
@@ -45,6 +62,8 @@ function useRecords(weeks) {
   const [records, setRecord] = useState({});
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+  const { t } = useTranslation();
+  const [, setWs] = useState();
 
   useEffect(() => {
     let oldRecords = { ...records };
@@ -66,6 +85,102 @@ function useRecords(weeks) {
       })
       .finally(() => setLoading(false));
   }, [weeks, id]);
+
+  const handleReceive = data => {
+    if (data.data) {
+      try {
+        data.data.week = data.data.week.toString();
+      } catch (err) {
+        console.log(err);
+      }
+      let week = data.data.week;
+      if (data.type === "RecUP") {
+        if (data.data.status === 99) {
+          setRecord(prev => {
+            if (!prev[week]) return prev;
+            let newRecords = prev[week].filter(row => row.id !== data.data.id);
+            return {
+              ...prev,
+              [week]: newRecords,
+            };
+          });
+        } else {
+          setRecord(prev => {
+            if (!prev[week]) return prev;
+            let newRecords = prev[week].filter(row => row.id !== data.data.id);
+            return {
+              ...prev,
+              [week]: [...newRecords, data.data].sort((a, b) => a.id - b.id),
+            };
+          });
+        }
+        toastr.success(
+          t("Socket.RecUPMsg", {
+            name: data.data.user.name,
+            week: data.data.week,
+            boss: data.data.boss,
+            type: t("Record.StatusType." + data.data.status),
+          }),
+          t("Socket.RecUP"),
+          {
+            closeButton: true,
+            positionClass: "toast-bottom-center",
+          }
+        );
+      } else if (data.type === "RecNEW") {
+        setRecord(prev => {
+          if (!prev[week]) return prev;
+          let newRecords = prev[data.data.week];
+          return {
+            ...prev,
+            [data.data.week]: [...newRecords, data.data],
+          };
+        });
+        toastr.success(
+          t("Socket.RecNEWMsg", {
+            name: data.data.user.name,
+            week: data.data.week,
+            boss: data.data.boss,
+            type: t("Record.StatusType." + data.data.status),
+          }),
+          t("Socket.RecNEW"),
+          {
+            closeButton: true,
+            positionClass: "toast-bottom-center",
+          }
+        );
+      }
+    }
+  };
+  const handleSocketError = (error, reason, socket) => {
+    if (error) {
+      toastr.error(t("Socket.ReConnecting"), t("Socket.ConnectError"), {
+        closeButton: true,
+        positionClass: "toast-bottom-center",
+      });
+    }
+    if (reason) {
+      console.log(reason);
+      toastr.error(t("Socket.ReConnecting"), t("Socket.TransportError"), {
+        closeButton: true,
+        positionClass: "toast-bottom-center",
+      });
+      socket.connect();
+    }
+  };
+  useEffect(() => {
+    let socket = webSocket("/", { transports: ["websocket"] });
+    socket.on("connect", () => socket.emit("track", { form_id: id }));
+    socket.on("FormTracker", handleReceive);
+    socket.on("connect_error", error => handleSocketError(error, null, socket));
+    socket.on("disconnect", reason => handleSocketError(null, reason, socket));
+    setWs(socket);
+
+    return () => {
+      socket.removeAllListeners();
+      socket.disconnect();
+    };
+  }, [id]);
 
   return [records, loading];
 }
@@ -111,6 +226,7 @@ const RecordRow = props => {
             weeks={watchWeeks}
             key={record.boss.boss}
             bossImage={record.boss.image}
+            bossName={record.boss.name}
             records={record.records}
           />
         ))}
@@ -126,7 +242,7 @@ RecordRow.propTypes = {
 
 const BossRow = props => {
   const [clicked, setClick] = useState(true);
-  const { bossImage, records, weeks } = props;
+  const { bossImage, bossName, records, weeks } = props;
   const classes = useStyles();
 
   return (
@@ -134,11 +250,18 @@ const BossRow = props => {
       <Grid item>
         <FormControlLabel
           control={
-            <IconButton onClick={() => setClick(!clicked)}>
-              <Badge badgeContent={records.length} color="primary">
-                <Avatar alt="test" src={bossImage} />
-              </Badge>
-            </IconButton>
+            <Grid container alignItems="center">
+              <Grid item>
+                <IconButton onClick={() => setClick(!clicked)}>
+                  <Badge badgeContent={records.length} color="primary">
+                    <Avatar alt="test" src={bossImage} />
+                  </Badge>
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <Typography>{bossName}</Typography>
+              </Grid>
+            </Grid>
           }
         />
       </Grid>
@@ -166,6 +289,7 @@ const BossRow = props => {
 
 BossRow.propTypes = {
   bossImage: PropTypes.string.isRequired,
+  bossName: PropTypes.string.isRequired,
   records: PropTypes.array.isRequired,
 };
 
@@ -176,7 +300,11 @@ const RecordChips = props => {
   const { t } = useTranslation();
   return (
     <Tooltip title={t(`Record.StatusType.${status}`)}>
-      <Chip className={classes.chips} avatar={<Avatar src={user.avatar} />} label={user.name} />
+      <Chip
+        className={`${classes.chips} ${classes["s" + status] || ""}`}
+        avatar={<Avatar src={user.avatar} />}
+        label={user.name}
+      />
     </Tooltip>
   );
 };

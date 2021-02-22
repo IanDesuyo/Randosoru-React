@@ -22,7 +22,7 @@ import { MTableToolbar } from "material-table";
 import { useAuth } from "../Services/Auth";
 import { useFav } from "../Services/Favorite";
 import ErrorHandler from "../Services/ErrorHandler";
-import toaster from "toastr";
+import toastr from "toastr";
 
 const tableIcons = {
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
@@ -216,7 +216,7 @@ export default function RecordTable(props) {
           } else {
             setRowData(prev => [...prev.filter(row => row.id !== data.data.id), data.data]);
           }
-          toaster.success(
+          toastr.success(
             t("Socket.RecUPMsg", {
               name: data.data.user.name,
               week: data.data.week,
@@ -235,7 +235,7 @@ export default function RecordTable(props) {
         if (data.data.week === parseInt(week) && data.data.boss === parseInt(boss)) {
           setRowData(prev => [...prev, data.data]);
         }
-        toaster.success(
+        toastr.success(
           t("Socket.RecNEWMsg", {
             name: data.data.user.name,
             week: data.data.week,
@@ -250,7 +250,7 @@ export default function RecordTable(props) {
         );
         break;
       case "System":
-        toaster.warning(data.message, t("Socket.System"), {
+        toastr.warning(data.message, t("Socket.System"), {
           closeButton: true,
           positionClass: "toast-bottom-center",
         });
