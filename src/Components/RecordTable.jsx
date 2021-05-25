@@ -191,7 +191,9 @@ export default function RecordTable(props) {
     }
 
     let stage = 0;
-    if (week >= 35) {
+    if (week >= 45) {
+      stage = 4;
+    } else if (week >= 35) {
       stage = 3;
     } else if (week >= 11) {
       stage = 2;
