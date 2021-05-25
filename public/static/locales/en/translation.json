@@ -62,7 +62,7 @@
       "99": "Deleted"
     },
     "Error": {
-      "Damage": "Damage need between 1 and 20000000",
+      "Damage": "Damage need between 1 and 40000000",
       "Comment": "Comment can't exceed 40 characters"
     },
     "NoRecord": "No one has signed up",

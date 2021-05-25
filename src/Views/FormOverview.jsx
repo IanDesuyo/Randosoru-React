@@ -53,7 +53,7 @@ const FormOverview = () => {
         <Paper className={classes.root}>
           <Typography variant="h4">觀察清單</Typography>
           <Typography variant="subtitle1" color="textSecondary">
-            可自由選擇想觀察的周次，最多觀察 5 個周次
+            可自由選擇想觀察的周次，最多觀察 10 個周次
           </Typography>
           <WatchAccordion
             title={"未觀察"}
@@ -96,7 +96,7 @@ function useWatchList(weeks) {
   const [disableWeeks, setDisable] = useState(weeks);
   const storageKey = "watchWeeks";
   const storageWeeks = JSON.parse(window.localStorage.getItem(storageKey) || "[]")
-    .slice(0, 5)
+    .slice(0, 10)
     .sort();
 
   useEffect(() => {
@@ -105,7 +105,7 @@ function useWatchList(weeks) {
   }, [weeks]);
 
   const handleAddEnable = week => {
-    if (enableWeeks.length >= 5) return;
+    if (enableWeeks.length >= 10) return;
     let watchWeeks = [...enableWeeks, week].sort();
     setEnable(watchWeeks);
     setDisable(oldData => oldData.filter(oldWeek => oldWeek !== week).sort());

@@ -77,7 +77,7 @@ export default function RecordDialog(props) {
 
   const handleChangeDamage = event => {
     let value = event.target.value;
-    if (value > 0 && value < 20000000) {
+    if (value > 0 && value <= 40000000) {
       setDamage(parseInt(value));
       setDamageError(null);
     } else if (value === "") {
